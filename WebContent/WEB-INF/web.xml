@@ -5,13 +5,8 @@
 	version="4.0">
 	<display-name>foodChatBot/map</display-name>
 	<welcome-file-list>
-		<welcome-file>index.html</welcome-file>
-		<welcome-file>index.htm</welcome-file>
-		<welcome-file>index.jsp</welcome-file>
-		<welcome-file>default.html</welcome-file>
-		<welcome-file>default.htm</welcome-file>
-		<welcome-file>default.jsp</welcome-file>
-		<welcome-file>map</welcome-file>
+		<welcome-file>NewFile.jsp</welcome-file>
+		<welcome-file>Test.html</welcome-file>
 	</welcome-file-list>
 
 	<filter>
