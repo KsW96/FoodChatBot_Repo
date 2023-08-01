@@ -31,7 +31,6 @@ public class CharacterEncodingFilter implements Filter {
 		if (encoding == null) {
 			encoding = "UTF-8";
 		}
-		System.out.println(encoding);
 	}
 
 	@Override
