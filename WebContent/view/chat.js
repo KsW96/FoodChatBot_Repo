@@ -10,7 +10,7 @@ function send(e) {
     chat: chat.value,
   };
 
-  fetch("http://localhost:8080/foodchat/chat", {
+  fetch("http://localhost:8080/foodChatBot/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -28,7 +28,7 @@ function send(e) {
 function bot(e) {
   e.preventDefault();
 
-  fetch("http://localhost:8080/foodchat/chat")
+  fetch("http://localhost:8080/foodChatBot/chat")
     .then((resp) => resp.json())
     .then((data) => {
       let food = data.food;
