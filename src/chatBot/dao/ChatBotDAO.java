@@ -1,5 +1,4 @@
-package chat;
-
+package chatBot.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +7,12 @@ import java.sql.SQLException;
 
 import util.DBUtil;
 
-public class ChatDao {
+public class ChatBotDAO {
+	// 키워드를 이용하여 매칭되는 음식명을 반환하는 메소드
+	public void selectByKeyword(String keyword) {
+		
+	}
+	
 	public int plusResolve() {
 		try (Connection conn = DBUtil.getConnection();
 				PreparedStatement stmt = conn.prepareStatement("UPDATE resolved SET count = count + 1 WHERE current_date();")) {

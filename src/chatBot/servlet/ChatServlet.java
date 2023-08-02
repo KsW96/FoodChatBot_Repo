@@ -1,4 +1,4 @@
-package chat;
+package chatBot.servlet;
 
 
 import java.io.BufferedReader;
@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import chatBot.dao.ChatBotDAO;
+
 @WebServlet("/chat")
 public class ChatServlet extends HttpServlet {
-	private ChatDao dao = new ChatDao();
+	private ChatBotDAO dao = new ChatBotDAO();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
