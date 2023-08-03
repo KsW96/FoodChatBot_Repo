@@ -15,10 +15,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ImageReturner {
-	public static void main(String[] args) {
+
+	public ImageReturner() {
+	};
+
+	public static String imageReturn(String name) {
 		Gson gson = new Gson();
 		OkHttpClient client = new OkHttpClient();
-		String name = "설렁탕";
 		Request request = new Request.Builder()
 				.url("https://dapi.kakao.com/v2/search/image?query=" + name + "&page=1&size=1")
 				.addHeader("Authorization", "KakaoAK 16a31b75ebda66fb5ccb58afcb8d9bc1").get().build();
@@ -34,11 +37,24 @@ public class ImageReturner {
 				System.out.println(body);
 
 				try {
+//					image_url 만 뽑아내기
 					JSONParser parser = new JSONParser();
-					JSONArray values;
-					values = (JSONArray) parser.parse(body);
-					JSONObject value = (JSONObject) values.get(0);
-					System.out.println((String) value.get("image_url"));
+
+					JSONObject jsonObject = (JSONObject) parser.parse(body);
+					System.out.println("body를 파싱한 값: " + jsonObject);
+
+					JSONArray jsonArray = (JSONArray) jsonObject.get("documents");
+					System.out.println("documents의 값: " + jsonArray.get(0));
+
+					JSONObject finaljson = (JSONObject) jsonArray.get(0);
+					System.out.println("image_URL: " + finaljson.get("image_url"));
+
+					String result = finaljson.get("image_url").toString();
+					return result;
+//					System.out.println(jsonObject.get("documents"));
+//					Map<String, String> aa = (HashMap) jsonObject.get("documents");
+//					System.out.println(aa.get("doc_url"));
+
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
@@ -50,5 +66,6 @@ public class ImageReturner {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return "";
 	}
 }

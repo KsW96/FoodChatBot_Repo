@@ -33,9 +33,10 @@ function bot(e) {
     .then((resp) => resp.json())
     .then((data) => {
       let food = data.food;
+	  let img_url = data.IMG_URL;
 
       let botMsgDiv =
-        '<div class="anotherMsg"><span class="msg">' + food + "</span></div>";
+        '<div class="anotherMsg"><span class="msg">' + food + img_url+"</span></div>";
       chatLog.insertAdjacentHTML("beforeend", botMsgDiv);
 
       let resolve = data.resolve;
