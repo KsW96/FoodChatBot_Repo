@@ -23,7 +23,7 @@ public class ImageReturner {
 		Gson gson = new Gson();
 		OkHttpClient client = new OkHttpClient();
 		Request request = new Request.Builder()
-				.url("https://dapi.kakao.com/v2/search/image?query=" + name + "&page=1&size=1")
+				.url("https://dapi.kakao.com/v2/search/image?query=" + name + "&page=1&size=2")
 				.addHeader("Authorization", "KakaoAK 16a31b75ebda66fb5ccb58afcb8d9bc1").get().build();
 
 		Call call = client.newCall(request);
@@ -46,7 +46,7 @@ public class ImageReturner {
 					JSONArray jsonArray = (JSONArray) jsonObject.get("documents");
 					System.out.println("documents의 값: " + jsonArray.get(0));
 
-					JSONObject finaljson = (JSONObject) jsonArray.get(0);
+					JSONObject finaljson = (JSONObject) jsonArray.get(2);
 					System.out.println("image_URL: " + finaljson.get("image_url"));
 
 					String result = finaljson.get("image_url").toString();
