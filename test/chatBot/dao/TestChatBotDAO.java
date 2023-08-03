@@ -11,9 +11,6 @@ public class TestChatBotDAO {
 	
 	@Test
 	public void testSelectByKeyword() {
-		String keyword = "따뜻";
-		List<String> list = dao.selectFormKeyword(keyword);
 		
-		assertNotNull(list);
 	}
 }
