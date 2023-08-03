@@ -11,7 +11,7 @@ public class NLPServletTest {
     public static void main(String[] args) {
         Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
         komoran.setUserDic("user_data/dic.user");
-        List<Token> tokens = komoran.analyze("아기가 먹고싶은걸 말해봐").getTokenList();
+        List<Token> tokens = komoran.analyze("후덥지근한 화끈한 화끈하고 화끈하며").getTokenList();
         for(Token token : tokens)
             System.out.println(token);
         	

@@ -45,7 +45,9 @@ public class ChatServlet extends HttpServlet {
 		Matcher m = p.matcher(body);
 		m.find();
 
+		// 사용자가 단어에 대해 알려준 값
 		String chat = m.group(1);
+		
 
 		System.out.println(chat);
 	}

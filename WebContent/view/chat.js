@@ -1,4 +1,4 @@
-var url = "//192.168.0.113/foodChatBot/chat";
+var url = "//192.168.0.113:8080/foodChatBot/chat";
 let message = document.getElementById("message");
 let submit = document.getElementById("submit");
 let chatLog = document.getElementById("chatLog");
