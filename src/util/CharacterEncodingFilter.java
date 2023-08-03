@@ -20,9 +20,15 @@ public class CharacterEncodingFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 		// rq.setCharacterEncoding(encoding);
-		HttpServletResponse resp = (HttpServletResponse) res;
-		resp.setHeader("Content-Type", "text/plain;charset=" + encoding);
-		chain.doFilter(req, res);
+		HttpServletRequest request = (HttpServletRequest)req;
+		String path = request.getRequestURI();
+		if (path.startsWith("/view")) {
+			
+		} else {
+			req.setCharacterEncoding("utf-8");
+			res.setCharacterEncoding("utf-8");
+			chain.doFilter(req, res);
+		}
 	}
 
 	@Override
