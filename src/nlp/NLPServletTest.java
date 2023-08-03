@@ -11,7 +11,7 @@ public class NLPServletTest {
     public static void main(String[] args) {
         Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
         komoran.setUserDic("user_data/dic.user");
-        List<Token> tokens = komoran.analyze("자동차 차 찻잔 차키 홍차 녹차 보리차 보이차 우렁차").getTokenList();
+        List<Token> tokens = komoran.analyze("아기가 먹고싶은걸 말해봐").getTokenList();
         for(Token token : tokens)
             System.out.println(token);
         	
@@ -25,10 +25,7 @@ public class NLPServletTest {
         	System.out.println("------------------------------");
         
         	
-        	
-        	
-        	System.out.println("시작 Index: " + tokens.get(0).getBeginIndex());
-        	System.out.println("끝 Index: " + tokens.get(0).getEndIndex());
+     
         	System.out.println("문자열(형태소): " + tokens.get(0).getMorph());
         	System.out.println("품사: "+tokens.get(0).getPos());
     }
