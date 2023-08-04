@@ -32,6 +32,4 @@ public class ChatBotDAO {
 		}
 		return list;
 	}
-
-
 }
