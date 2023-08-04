@@ -1,4 +1,4 @@
-var url = "http://localhost:8080/foodChatBot/view/chat.html";
+var url = "http://localhost:8080/foodChatBot/chat";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");

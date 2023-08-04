@@ -17,7 +17,6 @@ import util.DBUtil;
 
 public class Test {
 	public static void main(String[] args) {
-		자연어 처리 ㅈ = new 자연어처리();
 		
 		
 		recommendService rs = new recommendService();
