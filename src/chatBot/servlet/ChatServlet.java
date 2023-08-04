@@ -2,7 +2,6 @@ package chatBot.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import chatBot.dao.ChatBotDAO;
 import chatBot.service.UnKnownService;
 import chatBot.service.recommendService;
 import nlp.NLP;
@@ -77,7 +75,7 @@ public class ChatServlet extends HttpServlet {
 		System.out.println(chat);
 		
 		String chatbot;
-		chatbot = recommend(chat);
+		//chatbot = recommend(chat);
 		
 		
 		
@@ -101,8 +99,7 @@ public class ChatServlet extends HttpServlet {
 		} else if (chat.equals("모르는단어")){
 			chatbot = "그것은 무엇?";
 		}
-		req.setAttribute("food", chatbot);
-		System.out.println(chatbot);
+//		req.setAttribute("food", chatbot);
 		String resolve = "0";
 		
 //		resp.setStatus(200);
@@ -114,13 +111,4 @@ public class ChatServlet extends HttpServlet {
 
 		return nlp.doNLP(chat);
 	}
-
-	public String recommend(String chat) {
-		List<String> wordList = new ArrayList<String>();
-		System.out.println(rs.getFoodList());
-		wordList.add(chat);
-		String food = rs.recommendFood(wordList);
-		return food;
-	}
-
 }
