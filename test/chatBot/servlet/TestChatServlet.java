@@ -18,7 +18,7 @@ import chatBot.service.UnKnownService;
 import chatBot.service.RecommendService;
 import nlp.NLP;
 
-@WebServlet("/chat")
+@WebServlet("/testChat")
 public class TestChatServlet extends HttpServlet {
 	UnKnownService us = new UnKnownService();
 	RecommendService rs = new RecommendService();
@@ -36,7 +36,6 @@ public class TestChatServlet extends HttpServlet {
 		List<String> chat = splitString(req);
 		chat = rs.removeException(chat);
 
-		String chatbot;
 		for (String elem : chat) {
 			System.out.println(elem);
 		}
@@ -97,23 +96,6 @@ public class TestChatServlet extends HttpServlet {
 		String chat = m.group(1);
 		System.out.println(chat);
 
-		String chatbot;
-
-		if (chat.equals("사람") || chat.equals("날씨") || chat.equals("장소")) {
-			chatbot = "그것은 어떤음식과 매칭?";
-		} else if (chat.equals("떡볶이") || chat.equals("돈가스") || chat.equals("죽")) {
-			chatbot = "감사합니다. 무엇을 먹고싶으세요?";
-		} else if (chat.equals("모르는단어")) {
-			chatbot = "그것은 무엇?";
-		}
-//		req.setAttribute("food", chatbot);
-		String resolve = "0";
-
-//		resp.setStatus(200);
-//		resp.setHeader("Content-Type", "application/json;charset=utf-8");
-//		resp.getWriter().write("{\"food\": \"" + chatbot + "\",");
-//		resp.getWriter().write("\"resolve\": \"" + resolve + "\"}");
-//		resp.getWriter().write("잘뜹니다");
 		NLP nlp = new NLP();
 
 		return nlp.doNLP(chat);
