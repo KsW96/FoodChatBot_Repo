@@ -15,7 +15,7 @@ function send(e) {
   addMessage("myMsg", message.value);
   scrollToBottom();
 
-  fetch("http://192.168.0.113:8080/foodchat/chat", {
+  fetch("http://192.168.0.113:8080/foodChatBot/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -58,7 +58,7 @@ function handleOptionSelect(option) {
   addMessage("myMsg", option);
   scrollToBottom();
 
-  fetch("http://192.168.0.113:8080/foodchat/chat", {
+  fetch("http://192.168.0.113:8080/foodChatBot/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json;charset=utf-8" },
     body: JSON.stringify({ chat: option }),
