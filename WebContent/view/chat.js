@@ -1,3 +1,4 @@
+var url = "http://localhost:8080/foodChatBot/view/chat.html";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
@@ -15,7 +16,7 @@ function send(e) {
   addMessage("myMsg", message.value);
   scrollToBottom();
 
-  fetch("http://192.168.0.113:8080/foodChatBot/chat", {
+  fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json;charset=utf-8",
@@ -58,7 +59,7 @@ function handleOptionSelect(option) {
   addMessage("myMsg", option);
   scrollToBottom();
 
-  fetch("http://192.168.0.113:8080/foodChatBot/chat", {
+  fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json;charset=utf-8" },
     body: JSON.stringify({ chat: option }),
