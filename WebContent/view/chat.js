@@ -1,8 +1,5 @@
 var url = "http://localhost:8080/foodChatBot/chat";
-<<<<<<< HEAD
 //수정이 반영이 안되요
-=======
->>>>>>> branch 'master' of https://github.com/0gon/foodChatBot.git
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");

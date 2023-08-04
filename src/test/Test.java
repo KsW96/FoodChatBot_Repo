@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Properties;
 
 import chatBot.dao.ChatBotDAO;
-import chatBot.model.WordCategory;
-import chatBot.model.WordFoodCount;
 import chatBot.service.recommendService;
 import util.DBUtil;
 

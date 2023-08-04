@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import chatBot.model.FoodCount;
 import util.DBUtil;
 
 public class ChatBotDAO {
@@ -33,5 +34,46 @@ public class ChatBotDAO {
 		return list;
 	}
 
+	public List<FoodCount> getFoodList(Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<FoodCount> list = new ArrayList<>();
 
+		try {
+			stmt = conn.prepareStatement("SELECT * FROM foodchat.food;");
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				String food = rs.getString("food");
+				list.add(new FoodCount(food, 0));
+			}
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return list;
+	}
+	
+	public String getCategory(Connection conn, String knownWord) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<FoodCount> list = new ArrayList<>();
+
+		try {
+			stmt = conn.prepareStatement("SELECT * FROM foodchat.words where word = ?;");
+			stmt.setString(1, knownWord);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				String category = rs.getString("category");
+				return category;
+			}
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return null;
+	}
+	
+	public void insertWord(String requestData) {
+		
+	}
 }

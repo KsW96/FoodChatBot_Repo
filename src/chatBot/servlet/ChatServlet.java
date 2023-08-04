@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import chatBot.model.KnownWordList;
+import chatBot.service.InsertService;
 import chatBot.service.UnKnownService;
 import chatBot.service.recommendService;
 import nlp.NLP;
@@ -20,6 +22,8 @@ import nlp.NLP;
 public class ChatServlet extends HttpServlet {
 	UnKnownService us = new UnKnownService();
 	recommendService rs = new recommendService();
+	InsertService is = new InsertService();
+	KnownWordList knownWordList = new KnownWordList();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,25 +40,44 @@ public class ChatServlet extends HttpServlet {
 		for (String elem : chat) {
 			System.out.println(elem);
 		}
-		// 전 처리 해줘야함
-		// 추천 해주기
-//		chatbot = recommend(chat);
 
-//		if(chat.equals("사람") || chat.equals("날씨") || chat.equals("장소")) {
-//			chatbot = "그것은 어떤음식과 매칭?";
-//		} else if ( chat.equals("떡볶이") || chat.equals("돈가스") || chat.equals("죽") ) {
-//			chatbot = "감사합니다. 무엇을 먹고싶으세요?";
-//		} else if (chat.equals("모르는단어")){
-//			chatbot = "그것은 무엇?";
-//		}
-//		req.setAttribute("food", chatbot);
-//		System.out.println(chatbot);
-//		String resolve = "0";
-//
-//		resp.setStatus(200);
-//		resp.setHeader("Content-Type", "application/json;charset=utf-8");
-//		resp.getWriter().write("{\"food\": \"" + chatbot + "\",");
-//		resp.getWriter().write("\"resolve\": \"" + resolve + "\"}");
+		// 경우의 수 나누기
+		String chats = null; // 사용자 입력 문자열
+		String request = "";
+		if (chat != null) { // 요청 body의 값이 chat 일때
+			// chat을 자연어 처리해서 wordList로 넣는다
+			List<String> wordList = null;
+			String unknownWord = us.unknownWord(wordList); // 단어 리스트를 넣어서 모르는 단어 하나를 받는다
+			if (unknownWord != null) { // 모르는 단어가 있을 때 - 모르는 단어가 없으면 null을 반환해서 조건처리한다
+				resp.setStatus(200);
+				resp.setHeader("Content-Type", "application/json;charset=utf-8");
+				resp.getWriter().write("\"request\": \"" + unknownWord + "\"}");
+			} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
+				String foodName = foodName(knownWordList.getKnownWordList());
+				resp.setStatus(200);
+				resp.setHeader("Content-Type", "application/json;charset=utf-8");
+				resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
+			}
+		} else if (request != null) { // 요청 body의 값이 request 일때
+			// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
+			String requestData = null;
+			insert(requestData);
+			// 하나의 음식명을 반환하는 메소드
+			// 아는단어리스트에 새로 배운 단어 추가해야함
+			String foodName = foodName(knownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json;charset=utf-8");
+			resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
+		}
+	}
+	
+	public void insert(String requestData) {
+		is.insert(requestData);
+	}
+
+	public String foodName(List<String> knownList) {
+		String foodName = rs.recommendFoodName(knownList);
+		return foodName;
 	}
 
 	public List<String> splitString(HttpServletRequest req) throws IOException {
@@ -73,35 +96,19 @@ public class ChatServlet extends HttpServlet {
 
 		String chat = m.group(1);
 		System.out.println(chat);
-		
+
 		String chatbot;
-		//chatbot = recommend(chat);
-		
-		
-		
-		// 분기 생성. 사용자 문자열 받은 경우(chat)와 모르는 단어 질문 후 응답받았을때(request)
-		// chatbot = 사용자요청을 json 형식으로 
-		// request = 재질문 받은 값을 json 형식으로 
-		// wordList = 자연어 처리된 문자열 리스트
-//		if (chatbot != null) {
-//			String unKnownWord = us.unknownWord(wordList);
-//			if (unKnownWord != null) {
-//				// unKnownWord 를 이용하여 
-//			}
-//		} else (request != null){
-//			
-//		}
-		
-		if(chat.equals("사람") || chat.equals("날씨") || chat.equals("장소")) {
+
+		if (chat.equals("사람") || chat.equals("날씨") || chat.equals("장소")) {
 			chatbot = "그것은 어떤음식과 매칭?";
-		} else if ( chat.equals("떡볶이") || chat.equals("돈가스") || chat.equals("죽") ) {
+		} else if (chat.equals("떡볶이") || chat.equals("돈가스") || chat.equals("죽")) {
 			chatbot = "감사합니다. 무엇을 먹고싶으세요?";
-		} else if (chat.equals("모르는단어")){
+		} else if (chat.equals("모르는단어")) {
 			chatbot = "그것은 무엇?";
 		}
 //		req.setAttribute("food", chatbot);
 		String resolve = "0";
-		
+
 //		resp.setStatus(200);
 //		resp.setHeader("Content-Type", "application/json;charset=utf-8");
 //		resp.getWriter().write("{\"food\": \"" + chatbot + "\",");
