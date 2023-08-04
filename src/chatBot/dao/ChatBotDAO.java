@@ -131,4 +131,23 @@ public class ChatBotDAO {
 		}
 		return list;
 	}
+
+	// exception테이블 받아오기
+	public List<String> getExceptions(Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<String> list = new ArrayList<>();
+		try {
+			stmt = conn.prepareStatement("SELECT * FROM exceptions");
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String word = rs.getString("word");
+				list.add(word);
+			}
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return list;
+	}
 }

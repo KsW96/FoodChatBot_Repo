@@ -1,7 +1,6 @@
 package nlp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +70,7 @@ public class NLP {
 
 	public static List<String> doNLP(String text) {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
-		komoran.setUserDic("user.dic");
+//		komoran.setUserDic("user.dic");
 		String userInputText = text;
 		String trimText = userInputText.trim();
 		Set<String> resultSet = new LinkedHashSet<>();
@@ -94,14 +93,13 @@ public class NLP {
 //			System.out.println("품사 : " + token.getPos());
 			}
 		}
-		
-		
+
 		for (String s : resultSet) {
 			resultList.add(s);
 		}
-		
-		System.out.println("리스트 출력이요 : "+resultList);
-		
+
+		System.out.println("리스트 출력이요 : " + resultList);
+
 		return resultList;
 	}
 }
