@@ -62,6 +62,7 @@ public class recommendService {
 			fillFcList(fcList);
 			for (String word : wordList) {
 				List<WordFoodCount> wfcList = getWfcList(word, conn);
+				//null 아닐때 체크하기 만들기
 				changeCount(fcList, wfcList);
 			}
 			return fcList;
