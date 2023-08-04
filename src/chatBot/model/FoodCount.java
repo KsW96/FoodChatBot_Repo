@@ -8,6 +8,7 @@ public class FoodCount {
 		this.food = food;
 		this.count = count;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -15,6 +16,7 @@ public class FoodCount {
 		result = prime * result + ((food == null) ? 0 : food.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -31,6 +33,7 @@ public class FoodCount {
 			return false;
 		return true;
 	}
+
 	public String getFood() {
 		return food;
 	}
