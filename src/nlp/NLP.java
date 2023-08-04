@@ -26,7 +26,7 @@ public class NLP {
 		return matcher.matches();
 	}
 
-	// 연결어미만 잘라내기
+	// 연결어미만 잘라내기 (미실행)
 	private static boolean regexJ(String pos) {
 		String pattern = "JKS|JKC|JKG|JKO|JKB|JKV|JKQ|JX|JC|EP|EF|EC|ETN|ETM";
 		Pattern compiledPattern = Pattern.compile(pattern);
@@ -34,7 +34,8 @@ public class NLP {
 
 		return matcher.matches();
 	}
-
+	
+	// (미실행)
 	private static List<String> 어미붙이기(List<Token> list) {
 		List<String> mergedList = new ArrayList<>();
 		List<String> morphList = new ArrayList<>();
@@ -57,7 +58,6 @@ public class NLP {
 				mergedCount++;
 			}
 		}
-
 		return mergedList;
 	}
 
@@ -85,7 +85,7 @@ public class NLP {
 //		System.out.println(komoList);
 
 		// 토큰을 참조하는 형태소와 품사
-		List<Token> tokens = komoran.analyze(userInputText).getTokenList();
+		List<Token> tokens = komoran.analyze(trimText).getTokenList();
 		for (Token token : tokens) {
 
 			if (regexN(token.getPos())) {

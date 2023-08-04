@@ -76,7 +76,7 @@ public class TestNLP {
 	public void doNLP() {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 		komoran.setUserDic("user.dic");
-		String userInputText = "문자열들어가는 공간입니다.";
+		String userInputText = "특별한 식사 요구사항이나 알러지 유발 물질이 있는지 알려주세요";
 		String trimText = userInputText.trim();
 		Set<String> resultSet = new LinkedHashSet<>();
 		List<String> resultList = new ArrayList<>();
@@ -89,7 +89,7 @@ public class TestNLP {
 //		System.out.println(komoList);
 
 		// 토큰을 참조하는 형태소와 품사
-		List<Token> tokens = komoran.analyze(userInputText).getTokenList();
+		List<Token> tokens = komoran.analyze(trimText).getTokenList();
 		for (Token token : tokens) {
 
 			if (regexN(token.getPos())) {

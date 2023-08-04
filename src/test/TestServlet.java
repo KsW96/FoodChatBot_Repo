@@ -31,5 +31,4 @@ public class TestServlet extends HttpServlet {
 		resp.setStatus(500);
 		resp.getWriter().println("doPost 방식의 요청이라 500 에러 처리");
 	}
-
 }
