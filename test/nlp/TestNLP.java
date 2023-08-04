@@ -1,7 +1,6 @@
 package nlp;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +36,7 @@ public class TestNLP {
 		return matcher.matches();
 	}
 
-	// (미사용) 
+	// (미사용)
 	private static List<String> 어미붙이기(List<Token> list) {
 		List<String> mergedList = new ArrayList<>();
 		List<String> morphList = new ArrayList<>();
@@ -71,12 +70,12 @@ public class TestNLP {
 //	=> 따라서 모르는 단어 발생시 아래의 형태로 질문 구조 작성(임시방편)
 //	VA는 ~다의 형태로 되묻기
 //	나머지는 ~이(가) 형태로 되묻기 가능
-	
+
 	@Test
 	public void doNLP() {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 		komoran.setUserDic("user.dic");
-		String userInputText = "문자열들어가는 공간입니다.";
+		String userInputText = "차갑고 시원한 레시피 공간입니다.";
 		String trimText = userInputText.trim();
 		Set<String> resultSet = new LinkedHashSet<>();
 		List<String> resultList = new ArrayList<>();
@@ -98,13 +97,12 @@ public class TestNLP {
 //			System.out.println("품사 : " + token.getPos());
 			}
 		}
-		
-		
+
 		for (String s : resultSet) {
 			resultList.add(s);
 		}
-		
-		System.out.println("리스트 출력이요 : "+resultList);
-		
+
+		System.out.println("리스트 출력이요 : " + resultList);
+
 	}
 }
