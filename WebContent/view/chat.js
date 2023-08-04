@@ -1,15 +1,20 @@
-var url = "http://192.168.0.113:8080/foodChatBot/chat";
-let message = document.getElementById("message");
-let submit = document.getElementById("submit");
-let chatLog = document.getElementById("chatLog");
-let resolved = document.getElementById("resolved");
+var url = "http://localhost:8080/foodChatBot/view/chat.html";
+const message = document.getElementById("chat");
+const submit = document.getElementById("submit");
+const chatLog = document.getElementById("chatLog");
+const resolved = document.getElementById("resolved");
 
 function send(e) {
-  e.preventDefault();
+  if (e !== null) {
+    e.preventDefault();
+  }
 
-  let obj = {
-    chat: chat.value,
+  const obj = {
+    chat: message.value,
   };
+
+  addMessage("myMsg", message.value);
+  scrollToBottom();
 
   fetch(url, {
     method: "POST",
@@ -17,33 +22,65 @@ function send(e) {
       "Content-Type": "application/json;charset=utf-8",
     },
     body: JSON.stringify(obj),
-  });
-
-  let myMsgDiv =
-    '<div class="myMsg"><span class="msg">' + chat.value + "</span></div>";
-  chatLog.insertAdjacentHTML("beforeend", myMsgDiv);
-
-  bot(e);
+  })
+    .then((resp) => resp.json())
+    .then(handleResponse);
 }
 
-function bot(e) {
-  e.preventDefault();
+function handleResponse(data) {
+  const food = data.food;
+  message.value = "";
 
-  fetch(url)
-    .then((resp) => resp.json())
-    .then((data) => {
-      let food = data.food;
-	  let img_url = data.IMG_URL;
+  addMessage("anotherMsg", food);
+  
+  if (food === "그것은 무엇?") {
+    addOptions(["사람", "날씨", "장소", "재료", "행동"]);
+  } else if (food === "그것은 어떤음식과 매칭?") {
+    addOptions(["떡볶이", "갈비탕", "돈가스", "죽"]);
+  }
+  scrollToBottom();
 
-      let botMsgDiv =
-        '<div class="anotherMsg"><span class="msg">' + food + img_url+"</span></div>";
-      chatLog.insertAdjacentHTML("beforeend", botMsgDiv);
+  const resolve = data.resolve;
+  resolved.innerHTML = resolve;
+}
 
-      let resolve = data.resolve;
-      resolved.innerHTML = resolve;
-    });
+function addOptions(options) {
+  const optionsElement = document.createElement("div");
+  options.forEach((option) => {
+    const button = document.createElement("button");
+    button.textContent = option;
+    button.onclick = () => handleOptionSelect(option);
+    optionsElement.appendChild(button);
+  });
+  chatLog.appendChild(optionsElement);
+}
+
+function handleOptionSelect(option) {
+  addMessage("myMsg", option);
+  scrollToBottom();
+
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json;charset=utf-8" },
+    body: JSON.stringify({ chat: option }),
+  }).then((resp) => resp.json())
+	.then((data) => {
+ 	 handleResponse(data);
+	});
+}
+
+function addMessage(senderClass, message) {
+  const msgDiv = document.createElement("div");
+  msgDiv.classList.add(senderClass);
+  msgDiv.innerHTML = '<span class="msg">' + message + "</span>";
+  chatLog.appendChild(msgDiv);
 }
 
 window.addEventListener("load", function (e) {
   submit.addEventListener("click", send);
 });
+
+function scrollToBottom() {
+  var chatLog = document.getElementById("chatLog");
+  chatLog.scrollTop = chatLog.scrollHeight;
+}

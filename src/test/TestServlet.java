@@ -15,12 +15,6 @@ public class TestServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setStatus(200);
-		resp.setHeader("Content-Type", "text/plain;charset=utf-8");
-		resp.getWriter().println("doGet 방식의 요청이며 200 처리");
-		System.out.println("서블릿 작동");
-
-		
 		String str = req.getParameter("text");
 		String url = ImageReturner.imageReturn(str);
 		req.setAttribute("url", url);

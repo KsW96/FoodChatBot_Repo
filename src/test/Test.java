@@ -17,6 +17,8 @@ import util.DBUtil;
 
 public class Test {
 	public static void main(String[] args) {
+		
+		
 		recommendService rs = new recommendService();
 		List<String> wordList = new ArrayList<String>();
 		System.out.println(rs.getFoodList());

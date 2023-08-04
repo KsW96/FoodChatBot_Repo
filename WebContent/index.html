@@ -70,11 +70,10 @@ console.log(keyword);
 // 위치 정보를 가져오는 함수
 function getCurrentLocation() {
     if (navigator.geolocation) {
-        // getCurrentPosition 메서드로 위치 정보를 가져옵니다.
         navigator.geolocation.getCurrentPosition(
             function(position) {
-                const latitude = position.coords.latitude; // 위도
-                const longitude = position.coords.longitude; // 경도
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
                 console.log("현재 위치:", latitude, longitude);
             },
             function(error) {
@@ -83,10 +82,12 @@ function getCurrentLocation() {
         );
     } else {
         console.error("Geolocation을 지원하지 않습니다.");
+        console.log("최신판");
     }
 }
 
 getCurrentLocation();
+
 	
 
 
