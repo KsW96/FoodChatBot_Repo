@@ -1,15 +1,16 @@
 package chatBot.dao;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 
 import chatBot.model.WordCategory;
-import chatBot.model.WordFoodCount;
 import util.DBUtil;
 
 public class TestChatBotDAO {
@@ -20,19 +21,11 @@ public class TestChatBotDAO {
 	public void test1() {
 		try {
 			conn = DBUtil.getConnection();
-			List<String> getFood = dao.getFood(conn);
-			assertNotNull(getFood);
-			
-			List<String> getWords = dao.getWords(conn);
-			assertNotNull(getWords);
-			
-			int getFoodCount = dao.getFoodCount(conn);
-			assertNotNull(getFoodCount);
-			
-			int getWordsCount = dao.getWordsCount(conn);
-			assertNotNull(getWordsCount);
-			
-			
+			List<WordCategory> fcList = new ArrayList<WordCategory>();
+			fcList.add(new WordCategory("아기", "person"));
+			fcList.add(new WordCategory("단", "taste"));
+			String foodName = dao.getFoodName(conn, fcList);
+			assertNotNull(foodName);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,15 +38,38 @@ public class TestChatBotDAO {
 	public void test2() {
 		try {
 			conn = DBUtil.getConnection();
-			// db word에 있는 단어
-			String word = "아기";
-			WordCategory wc = dao.selectFromWords(word, conn);
-			assertNotNull(wc);
-			
-			List<WordFoodCount> wfcList = dao.selectFromTable(wc, conn);
-			assertNotNull(wfcList);
-			
-			
+			List<String> words = new ArrayList<String>();
+			words.add("아기");
+			List<String> list = dao.unknownWords(words, conn);
+			assertNotNull(list);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
+	
+	@Test
+	public void test3() {
+		try {
+			conn = DBUtil.getConnection();
+			String knownWord = "아기";
+			String category = dao.getCategory(conn, knownWord);
+			assertEquals(category, "person");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
+	
+	@Test
+	public void test4() {
+		try {
+			conn = DBUtil.getConnection();
+			// isertWord 테스트
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

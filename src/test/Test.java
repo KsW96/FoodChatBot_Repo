@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import chatBot.dao.ChatBotDAO;
-import chatBot.service.recommendService;
+import chatBot.service.RecommendService;
 import util.DBUtil;
 
 public class Test {

@@ -19,7 +19,7 @@ import chatBot.service.RecommendService;
 import nlp.NLP;
 
 @WebServlet("/chat")
-public class ChatServlet extends HttpServlet {
+public class TestChatServlet extends HttpServlet {
 	UnKnownService us = new UnKnownService();
 	RecommendService rs = new RecommendService();
 	InsertService is = new InsertService();
