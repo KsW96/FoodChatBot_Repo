@@ -17,16 +17,23 @@ import util.DBUtil;
 
 public class Test {
 	public static void main(String[] args) {
-		자연어 처리 ㅈ = new 자연어처리();
-		
-		
-		recommendService rs = new recommendService();
-		List<String> wordList = new ArrayList<String>();
-		System.out.println(rs.getFoodList());
-		wordList.add("아기");
-		String food = rs.recommendFood(wordList);
-		System.out.println(food);
-		
+		ChatBotDAO dao = new ChatBotDAO();
+		Connection conn = null;
+		List<String> words = new ArrayList<String>();
+		words.add("아기");
+		words.add("달달");
+		words.add("시원");
+		List<String> list = null;
+		try {
+			conn = DBUtil.getConnection();
+			list = dao.unknownWords(words, conn);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
+		System.out.println(list);
 	}
 }
 

@@ -1,4 +1,5 @@
-var url = "http://localhost:8080/foodChatBot/view/chat.html";
+var url = "http://localhost:8080/foodChatBot/chat";
+//수정이 반영이 안되요
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");

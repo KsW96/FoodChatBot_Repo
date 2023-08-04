@@ -14,11 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import chatBot.dao.ChatBotDAO;
+import chatBot.service.UnKnownService;
 import chatBot.service.recommendService;
 import imgFinder.ImageReturner;
 
 @WebServlet("/chat")
 public class ChatServlet extends HttpServlet {
+	UnKnownService us = new UnKnownService();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,6 +49,21 @@ public class ChatServlet extends HttpServlet {
 		String chatbot;
 		chatbot = recommend(chat);
 		
+		
+		
+		// 분기 생성. 사용자 문자열 받은 경우(chat)와 모르는 단어 질문 후 응답받았을때(request)
+		// chatbot = 사용자요청을 json 형식으로 
+		// request = 재질문 받은 값을 json 형식으로 
+		// wordList = 자연어 처리된 문자열 리스트
+		if (chatbot != null) {
+			String unKnownWord = us.unknownWord(wordList);
+			if (unKnownWord != null) {
+				// unKnownWord 를 이용하여 
+			}
+		} else (request != null){
+			
+		}
+		
 		if(chat.equals("사람") || chat.equals("날씨") || chat.equals("장소")) {
 			chatbot = "그것은 어떤음식과 매칭?";
 		} else if ( chat.equals("떡볶이") || chat.equals("돈가스") || chat.equals("죽") ) {
@@ -62,6 +79,7 @@ public class ChatServlet extends HttpServlet {
 		resp.setHeader("Content-Type", "application/json;charset=utf-8");
 		resp.getWriter().write("{\"food\": \"" + chatbot + "\",");
 		resp.getWriter().write("\"resolve\": \"" + resolve + "\"}");
+		resp.getWriter().write("잘뜹니다");
 	}
 	
 	public String recommend(String chat) {
