@@ -46,7 +46,7 @@ public class ImageReturner {
 					JSONArray jsonArray = (JSONArray) jsonObject.get("documents");
 					System.out.println("documents의 값: " + jsonArray.get(0));
 
-					JSONObject finaljson = (JSONObject) jsonArray.get(2);
+					JSONObject finaljson = (JSONObject) jsonArray.get(1);
 					System.out.println("image_URL: " + finaljson.get("image_url"));
 
 					String result = finaljson.get("image_url").toString();

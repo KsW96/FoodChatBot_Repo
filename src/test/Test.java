@@ -34,6 +34,7 @@ public class Test {
 			DBUtil.close(conn);
 		}
 		System.out.println(list);
+		
 	}
 }
 
