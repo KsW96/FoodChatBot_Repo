@@ -12,10 +12,13 @@ import kr.co.shineware.nlp.komoran.constant.DEFAULT_MODEL;
 import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.Token;
 
-public class NLPServletTest {
+public class NLP {
+
+	public NLP() {
+	}
 
 	// 명사의 형태를 가지는 애들 걸러내기
-	public static boolean regexN(String pos) {
+	private static boolean regexN(String pos) {
 		String pattern = "NNG|NNP|MAG|VA|XR";
 		Pattern compiledPattern = Pattern.compile(pattern);
 		Matcher matcher = compiledPattern.matcher(pos);
@@ -24,7 +27,7 @@ public class NLPServletTest {
 	}
 
 	// 연결어미만 잘라내기
-	public static boolean regexJ(String pos) {
+	private static boolean regexJ(String pos) {
 		String pattern = "JKS|JKC|JKG|JKO|JKB|JKV|JKQ|JX|JC|EP|EF|EC|ETN|ETM";
 		Pattern compiledPattern = Pattern.compile(pattern);
 		Matcher matcher = compiledPattern.matcher(pos);
@@ -32,7 +35,7 @@ public class NLPServletTest {
 		return matcher.matches();
 	}
 
-	public static List<String> 어미붙이기(List<Token> list) {
+	private static List<String> 어미붙이기(List<Token> list) {
 		List<String> mergedList = new ArrayList<>();
 		List<String> morphList = new ArrayList<>();
 		String empty = "";
@@ -65,12 +68,14 @@ public class NLPServletTest {
 //	=> 따라서 모르는 단어 발생시 아래의 형태로 질문 구조 작성(임시방편)
 //	VA는 ~다의 형태로 되묻기
 //	나머지는 ~이(가) 형태로 되묻기 가능
-	public static void main(String[] args) {
+
+	public static List<String> doNLP(String text) {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 		komoran.setUserDic("user.dic");
-		String userInputText = "심심한 날, 간단한 간식 메뉴를 추천해주세요!";
+		String userInputText = text;
 		String trimText = userInputText.trim();
-		Set<String> resultList = new LinkedHashSet<>();
+		Set<String> resultSet = new LinkedHashSet<>();
+		List<String> resultList = new ArrayList<>();
 
 		// 형태소만 보내는주는 애
 //		List<String> komoList = komoran.analyze(userText).getNouns();
@@ -85,13 +90,18 @@ public class NLPServletTest {
 
 			if (regexN(token.getPos())) {
 //			System.out.println("문자열 : " + token.getMorph());
-				resultList.add(token.getMorph());
+				resultSet.add(token.getMorph());
 //			System.out.println("품사 : " + token.getPos());
 			}
 		}
-
-		System.out.println(resultList);
-//		System.out.println(어미붙이기(tokens));
-
+		
+		
+		for (String s : resultSet) {
+			resultList.add(s);
+		}
+		
+		System.out.println("리스트 출력이요 : "+resultList);
+		
+		return resultList;
 	}
 }

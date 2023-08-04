@@ -20,6 +20,18 @@ public class TestServlet extends HttpServlet {
 		resp.getWriter().println("doGet 방식의 요청이며 200 처리");
 		System.out.println("서블릿 작동");
 
+		
+		String str = req.getParameter("text");
+		String url = ImageReturner.imageReturn(str);
+		req.setAttribute("url", url);
+		req.getRequestDispatcher("/viewtest.jsp").forward(req, resp);
+//		resp.setStatus(200);
+//		resp.getWriter().println("doGet 방식의 요청이며 200 처리");
+//		String url = ImageReturner.imageReturn(str);
+//		resp.getWriter().println(url);
+//		System.out.println("서블릿 작동");
+	}
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.setStatus(500);
