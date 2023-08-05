@@ -23,9 +23,8 @@ public class TestChatBotDAO {
 			conn = DBUtil.getConnection();
 			List<WordCategory> fcList = new ArrayList<WordCategory>();
 			fcList.add(new WordCategory("아기", "person"));
-			fcList.add(new WordCategory("단", "taste"));
 			String foodName = dao.getFoodName(conn, fcList);
-			System.out.println(foodName);
+			System.out.println("음식추천 : "+foodName);
 			assertNotNull(foodName);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

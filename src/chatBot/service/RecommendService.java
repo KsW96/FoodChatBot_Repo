@@ -22,6 +22,8 @@ public class RecommendService {
 				String category = dao.getCategory(conn, knownWord);
 				fcList.add(new WordCategory(knownWord, category));
 			}
+			System.out.println("fcList : " + fcList);
+			System.out.println("knownList : " + knownList);
 			String foodName = dao.getFoodName(conn, fcList);
 			return foodName;
 			

@@ -61,14 +61,16 @@ public class ChatServlet extends HttpServlet {
 			String foodName = foodName(knownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json;charset=utf-8");
-			resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
+			String answer = "\"answer\": \"" + foodName + "\"}";
+			System.out.println("응답 answer : "+answer);
+			resp.getWriter().write(answer);
 		}
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 시험(은) 가능.. (answer, request 값 넣어보세요)
-		 resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
+		 //resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
 
 		List<String> chat = splitString(req);
 		for (String elem : chat) {
@@ -82,12 +84,16 @@ public class ChatServlet extends HttpServlet {
 			if (unknownWord != null) { // 모르는 단어가 있을 때 - 모르는 단어가 없으면 null을 반환해서 조건처리한다
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				resp.getWriter().write("\"request\": \"" + unknownWord + "\"}");
+				String requestS = "{\"request\": \"" + unknownWord + "\"}";
+				System.out.println("응답 request : "+requestS);
+				resp.getWriter().write(requestS);
 			} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
 				String foodName = foodName(knownWordList.getKnownWordList());
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
+				String answer = "{\"request\": \"" + unknownWord + "\"}";
+				System.out.println("응답 answer : "+answer);
+				resp.getWriter().write(answer);
 			}
 		} else {
 			// 문제있는 상황에 여기로 옵니다.
