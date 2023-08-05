@@ -41,6 +41,8 @@ public class RecommendService {
 			exceptionList = dao.getExceptions(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
 		}
 
 		words.addAll(list);
