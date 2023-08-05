@@ -8,9 +8,9 @@ function addOptionList(obj) {
   optionList.push(obj);
 }
 
-function fetchData(obj) {
+function fetchData(obj, method) {
   return fetch("http://localhost:8080/foodChatBot/chat", {
-    method: "POST",
+    method: method,
     headers: {
       "Content-Type": "application/json;charset=utf-8",
     },
@@ -24,7 +24,7 @@ function send(e) {
   }
 
   addMessage("myMsg", message.value);
-  fetchData({ chat: message.value }).then(handleResponse);
+  fetchData({ chat: message.value }, "POST").then(handleResponse);
 }
 
 function handleResponse(data) {
@@ -67,7 +67,7 @@ function handleOptionSelect(option, id) {
   }
   if (option === "아닌듯") {
     addMessage("myMsg", option);
-    fetchData(obj).then(handleResponse);
+    fetchData(obj, "POST").then(handleResponse);
   } else if (id === "category" || option === "있어") {
     addMessage("myMsg", option);
     addMessage("anotherMsg", "그것은 어떤음식과 매칭?");
@@ -78,7 +78,7 @@ function handleOptionSelect(option, id) {
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
     addMessage("myMsg", option);
-    fetchData(optionList).then(handleResponse);
+    fetchData(optionList, "PUT").then(handleResponse);
     optionList = [];
   }
   document.getElementById("optionsDiv").remove();
