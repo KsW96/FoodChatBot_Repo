@@ -13,10 +13,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import chatBot.model.KnownWordList;
+import chatBot.model.jsonModel.Request;
 import chatBot.service.InsertService;
-import chatBot.service.UnKnownService;
 import chatBot.service.RecommendService;
+import chatBot.service.UnKnownService;
 import nlp.NLP;
 
 @WebServlet("/chat")
@@ -25,6 +29,7 @@ public class ChatServlet extends HttpServlet {
 	RecommendService rs = new RecommendService();
 	InsertService is = new InsertService();
 	KnownWordList knownWordList = new KnownWordList();
+	ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,19 +38,45 @@ public class ChatServlet extends HttpServlet {
 	}
 
 	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// request json 형태로 오는 정보임
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = req.getReader();
+		String line;
+		while ((line = br.readLine()) != null) {
+			sb.append(line);
+		}
+		String body = sb.toString();
+		String[] jsonItems = body.split(",");
+
+		Request request = mapper.readValue(jsonItems[0], Request.class);
+			
+			
+		if (request != null) { // 요청 body의 값이 request 일때
+			// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
+			String requestData = null;
+			insert(requestData);
+			// 하나의 음식명을 반환하는 메소드
+			// 아는단어리스트에 새로 배운 단어 추가해야함
+			String foodName = foodName(knownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json;charset=utf-8");
+			resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
+		}
+	}
+
+	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 시험(은) 가능.. (answer, request 값 넣어보세요)
-		resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
-		
+		// resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
+
 		List<String> chat = splitString(req);
 		for (String elem : chat) {
 			System.out.println(elem);
 		}
 
-		// 경우의 수 나누기
-		String chats = null; // 사용자 입력 문자열
-		String request = "";
-		if (chat != null) { // 요청 body의 값이 chat 일때
+		// 사용자 입력 문자열
+		if (chat.size() != 0) { // 요청 body의 값이 chat 일때
 			// chat을 자연어 처리해서 wordList로 넣는다
 			List<String> wordList = null;
 			String unknownWord = us.unknownWord(wordList); // 단어 리스트를 넣어서 모르는 단어 하나를 받는다
@@ -59,19 +90,12 @@ public class ChatServlet extends HttpServlet {
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
 				resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
 			}
-		} else if (request != null) { // 요청 body의 값이 request 일때
-			// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
-			String requestData = null;
-			insert(requestData);
-			// 하나의 음식명을 반환하는 메소드
-			// 아는단어리스트에 새로 배운 단어 추가해야함
-			String foodName = foodName(knownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json;charset=utf-8");
-			resp.getWriter().write("\"answer\": \"" + foodName + "\"}");
+		} else {
+			// 문제있는 상황에 여기로 옵니다.
+			System.out.println("서블릿에서 문제가 있습니다.");
 		}
 	}
-	
+
 	public void insert(String requestData) {
 		is.insert(requestData);
 	}
@@ -86,7 +110,7 @@ public class ChatServlet extends HttpServlet {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = req.getReader();
 		NLP nlp = new NLP();
-		
+
 		String line;
 		while ((line = br.readLine()) != null) {
 			sb.append(line);
