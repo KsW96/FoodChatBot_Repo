@@ -68,7 +68,7 @@ public class ChatServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// 시험(은) 가능.. (answer, request 값 넣어보세요)
-		// resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
+		 resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
 
 		List<String> chat = splitString(req);
 		for (String elem : chat) {

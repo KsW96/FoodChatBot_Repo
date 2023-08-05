@@ -25,6 +25,7 @@ public class TestChatBotDAO {
 			fcList.add(new WordCategory("아기", "person"));
 			fcList.add(new WordCategory("단", "taste"));
 			String foodName = dao.getFoodName(conn, fcList);
+			System.out.println(foodName);
 			assertNotNull(foodName);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -41,6 +42,7 @@ public class TestChatBotDAO {
 			List<String> words = new ArrayList<String>();
 			words.add("아기");
 			List<String> list = dao.unknownWords(words, conn);
+			System.out.println(list.toString());
 			assertNotNull(list);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -56,6 +58,7 @@ public class TestChatBotDAO {
 			conn = DBUtil.getConnection();
 			String knownWord = "아기";
 			String category = dao.getCategory(conn, knownWord);
+			System.out.println(category);
 			assertEquals(category, "person");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -69,6 +72,7 @@ public class TestChatBotDAO {
 	public void test4() {
 		try {
 			conn = DBUtil.getConnection();
+			
 			// isertWord 테스트
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

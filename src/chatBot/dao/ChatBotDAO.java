@@ -84,6 +84,26 @@ public class ChatBotDAO {
 		}
 		return null;
 	}
+	
+	public List<String> getExceptions(Connection conn) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<String> list = new ArrayList<String>();
+
+		try {
+				stmt = conn.prepareStatement("SELECT * FROM foodchat.exceptions");
+				rs = stmt.executeQuery();
+			while (!rs.next()) {
+				String word = rs.getString("word");
+				list.add(word);
+			}
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return list;
+	}
+
 
 	public void insertWord(String requestData) {
 		// TODO Auto-generated method stub
