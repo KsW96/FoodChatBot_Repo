@@ -23,33 +23,29 @@ function send(e) {
     e.preventDefault();
   }
 
-  const obj = {
-    chat: message.value,
-  };
-
   addMessage("myMsg", message.value);
-  fetchData(obj).then(handleResponse);
+  fetchData({ chat: message.value }).then(handleResponse);
 }
 
 function handleResponse(data) {
   message.value = "";
-  // 추천의 답 -> chat : Y/N 날려주고, 지도로 가기
+  // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
-	console.log(data.answer);
     addMessage("anotherMsg", "이건 어떠세요?");
     addMessage("anotherMsg", data.answer);
     addOptions(["그래", "아닌듯"], "chat");
   }
-  // 단어의 답 -> 단어의 정보들 날려주고, answer 받기
+  // 모르는 단어의 답 -> 단어의 정보들 날려줌
   if (data.request !== undefined) {
     addOptionList(obj = { request: data.request })
-    addMessage("anotherMsg", "모르는 단어가 있다. '"+ data.request + "'(이)가 뭐임");
+    addMessage("anotherMsg", "모르는 단어가 있다. '"+ data.request + "'가 뭐임");
     addOptions(["사람", "날씨", "장소", "재료", "행동"], "category");
   } 
 }
 
 function addOptions(options, id) {
   const optionsElement = document.createElement("div");
+  optionsElement.id = "optionsDiv";
   options.forEach((option) => {
     const button = document.createElement("button");
     button.textContent = option;
@@ -85,6 +81,7 @@ function handleOptionSelect(option, id) {
     fetchData(optionList).then(handleResponse);
     optionList = [];
   }
+  document.getElementById("optionsDiv").remove();
 }
 
 function addMessage(senderClass, message) {
