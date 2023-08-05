@@ -15,7 +15,6 @@ import util.DBUtil;
 
 public class TestRecommendService {
 	ChatBotDAO dao = new ChatBotDAO();
-	List<String> exceptionList = null;
 	
 	public String recommendFoodName(List<String> knownList) {
 		Connection conn = null;
@@ -37,12 +36,18 @@ public class TestRecommendService {
 
 	// excption테이블에 있는 필요없는 단어 제거해서 넘겨주기
 	public List<String> removeException(List<String> list) {
+		Connection conn = null;
+		List<String> exceptionList = new ArrayList<>();
 		List<String> words = new ArrayList<>();
-		List<String> exception = exceptionList;
+		try {
+			conn = DBUtil.getConnection();
+			exceptionList = dao.getExceptions(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		words.addAll(list);
-		words.removeAll(exception);
-		System.out.println(words);
+		words.removeAll(exceptionList);
 
 		return words;
 	}
@@ -58,7 +63,12 @@ public class TestRecommendService {
 	
 	@Test
 	public void test2() {
-		// 리무브 테스트해주세요
+		List<String> knownList = new ArrayList<String>();
+		knownList.add("오늘");
+		knownList.add("나는");
+		List<String> foodName = removeException(knownList);
+		assertNotNull(foodName);
+		System.out.println(foodName);
 	}
 	
 }
