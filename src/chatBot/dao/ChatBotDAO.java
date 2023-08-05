@@ -48,7 +48,8 @@ public class ChatBotDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<String> list = new ArrayList<String>();
-
+		System.out.println("words리스트 : " + words);
+		
 		try {
 			for (String word : words) {
 				stmt = conn.prepareStatement("SELECT * FROM foodchat.words WHERE word = ?;");
