@@ -26,6 +26,11 @@ const foodList = [
   "칼국수",
   "피자",
 ];
+const hello = "반갑습니다. 음식 추천을 도와드릴 dungs라고 합니다.";
+
+function firstMsg() {
+  addMessage("anotherMsg", hello);
+}
 
 function addOptionList(obj) {
   optionList.push(obj);
@@ -75,8 +80,8 @@ function handleResponse(data) {
 	  addOptionList((obj = { request: data.answer }));
 	  localStorage.setItem('keyword', data.answer);
 	  addMessage("anotherMsg", data.answer + " 어때?");
-      addMessage("anotherMsg", "<img src = '" + data.img + "' />");
-      addOptions(["그래", "아닌듯"], "request");
+    addImg("anotherMsg", "<img src = '" + data.img + "' height = '300' />");
+    addOptions(["그래", "아닌듯"], "request");
 	}
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
@@ -105,17 +110,19 @@ function handleResponse(data) {
 }
 
 function addOptions(options, id) {
-  message.disabled = true;
-  const optionsElement = document.createElement("div");
-  optionsElement.id = "optionsDiv";
-  options.forEach((option) => {
-    const button = document.createElement("button");
-    button.textContent = option;
-    button.onclick = () => handleOptionSelect(option, id);
-    optionsElement.appendChild(button);
-  });
-  chatLog.appendChild(optionsElement);
-  scrollToBottom();
+  setTimeout(() => {
+    message.disabled = true;
+    const optionsElement = document.createElement("div");
+    optionsElement.id = "optionsDiv";
+    options.forEach((option) => {
+      const button = document.createElement("button");
+      button.textContent = option;
+      button.onclick = () => handleOptionSelect(option, id);
+      optionsElement.appendChild(button);
+    });
+    chatLog.appendChild(optionsElement);
+    scrollToBottom();
+  }, 1500)
 }
 
 function handleOptionSelect(option, id) {
@@ -137,7 +144,7 @@ function handleOptionSelect(option, id) {
     } else {
       addOptionList({ category: "수락" });
       addMessage("anotherMsg", "근처 음식점을 소개해줄게!");
-      addMessage("anotherMsg", "<a href = 'view/location.html'>음식점 보러가기</a>");
+      addImg("anotherMsg", "<a href = 'view/location.html'>음식점 보러가기</a>");
     }
     fetchData(optionList, "PUT");
     optionList = [];
@@ -187,13 +194,42 @@ function chatBotAnswer() {
   }
 }
 
+function addImg(senderClass, message) {
+  setTimeout(() => {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add(senderClass);
+    msgDiv.innerHTML = '<span class="msg">' + message + "</span>";
+    chatLog.appendChild(msgDiv);
+    scrollToBottom();
+  }, 1500)
+}
+
 function addMessage(senderClass, message) {
   const msgDiv = document.createElement("div");
   msgDiv.classList.add(senderClass);
-  msgDiv.innerHTML = '<span class="msg">' + message + "</span>";
+  msgDiv.innerHTML = '<span class="msg"></span>'; // 타이핑 효과용 빈 span 추가
   chatLog.appendChild(msgDiv);
+  simulateTyping(message, msgDiv.querySelector(".msg"));
   scrollToBottom();
 }
+
+function simulateTyping(content, element) {
+  let i = 0;
+  const typingInterval = 60; // 타이핑 속도 조절 가능
+  const typingDelay = 500;   // 타이핑 효과 시작 전 딜레이
+
+  setTimeout(function() {
+    const typing = setInterval(function() {
+      if (element && i < content.length) {
+        element.textContent += content[i++];
+      } else {
+        clearInterval(typing);
+      }
+    }, typingInterval);
+  }, typingDelay);
+  scrollToBottom();
+}
+
 
 function scrollToBottom() {
   var chatLog = document.getElementById("chatLog");
@@ -209,5 +245,6 @@ function handleButtonClick(e) {
 }
 
 window.addEventListener("load", () => {
+  firstMsg(); 
   submit.addEventListener("click", handleButtonClick);
 });

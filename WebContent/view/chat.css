@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap');
+
+* {
+  color: #000;
+  font-family: Noto Sans KR;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 100%;
+}
+
 #chatWrap {
   width: 600px;
   border: 1px solid #ddd;
@@ -18,20 +28,24 @@
   padding: 10px;
 }
 
+button {
+  font-size: 15px;
+}
+
 .myMsg {
   text-align: right;
+  margin-top: 8px;
 }
 
 .anotherMsg {
   text-align: left;
-  margin-bottom: 5px;
 }
 
 .msg {
   display: inline-block;
-  border-radius: 15px;
-  padding: 7px 15px;
-  margin-bottom: 10px;
+  border-radius: 50px;
+  padding: 15px 36px;
+  margin-bottom: 5px;
   margin-top: 5px;
 }
 
@@ -46,13 +60,14 @@
 
 .anotherName {
   font-size: 12px;
+  padding: 5px 6px;
   display: block;
 }
 
 #chatForm {
   display: block;
   width: 100%;
-  height: 50px;
+  height: 70px;
   border-top: 2px solid #f0f0f0;
 }
 
@@ -73,6 +88,10 @@
   background: none;
   color: #0084ff;
   font-size: 17px;
+}
+
+#chatForm > input[type="submit"]:hover {
+  color: #82b7e7;
 }
 
 #memberWrap {
@@ -105,4 +124,28 @@
   padding-top: 20px;
   display: flex;
   justify-content: space-around;
+}
+
+#login {
+  width: 154px;
+  height: 50px;
+  flex-shrink: 0;
+  font-size: 25px;
+  border-radius: 50px;
+  border: none;
+  background: #FFE45E;
+}
+
+#login:hover{
+  background-color:#cfbe67;
+  transition: 0.7s;
+}
+
+#resolved {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  text-align: center;
+  padding: 20px;
 }
