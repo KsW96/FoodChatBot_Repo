@@ -68,15 +68,16 @@ function addFood(e) {
 function handleResponse(data) {
   // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
-    chatBotAnswer();
     if (data.answer === "") {
       addMessage("anotherMsg", "미안한데 못알아들었어. 다시 부탁해줄래?");
-    }
-    addOptionList((obj = { request: data.answer }));
-	localStorage.setItem('keyword', data.answer);
-    addMessage("anotherMsg", data.answer + " 어때?");
-    addMessage("anotherMsg", "<img src = '" + data.img + "' />");
-    addOptions(["그래", "아닌듯"], "request");
+    } else {
+      chatBotAnswer();
+	  addOptionList((obj = { request: data.answer }));
+	  localStorage.setItem('keyword', data.answer);
+	  addMessage("anotherMsg", data.answer + " 어때?");
+      addMessage("anotherMsg", "<img src = '" + data.img + "' />");
+      addOptions(["그래", "아닌듯"], "request");
+	}
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
   if (data.request !== undefined) {
