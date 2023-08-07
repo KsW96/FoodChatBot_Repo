@@ -33,7 +33,7 @@ function handleResponse(data) {
   // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
     chatBotAnswer();
-    addMessage("anotherMsg", data.answer);
+    addMessage("anotherMsg", data.answer + " 어때?");
     addOptions(["그래", "아닌듯"], "chat");
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
@@ -111,7 +111,7 @@ function chatBotAnswer() {
     addMessage("anotherMsg", first[num]);
   } else if (nope === 1) {
     addMessage("anotherMsg", second[num]);
-  } else if (nope === 2) {
+  } else {
     addMessage("anotherMsg", third[num]);
   }
 }
