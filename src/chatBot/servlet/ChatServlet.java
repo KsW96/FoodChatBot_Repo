@@ -12,12 +12,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chatBot.model.KnownWordList;
-import chatBot.model.jsonModel.Request;
 import chatBot.service.InsertService;
 import chatBot.service.RecommendService;
 import chatBot.service.UnKnownService;
@@ -28,7 +27,6 @@ public class ChatServlet extends HttpServlet {
 	UnKnownService us = new UnKnownService();
 	RecommendService rs = new RecommendService();
 	InsertService is = new InsertService();
-	KnownWordList knownWordList = new KnownWordList();
 	ObjectMapper mapper = new ObjectMapper();
 
 	@Override
@@ -39,6 +37,7 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println("기억하는 단어들 : "+KnownWordList.getKnownWordList());
 		// request json 형태로 오는 정보임
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = req.getReader();
@@ -49,8 +48,9 @@ public class ChatServlet extends HttpServlet {
 		String body = sb.toString();
 		String[] jsonItems = body.split(",");
 
-		Request request = mapper.readValue(jsonItems[0], Request.class);
-			
+		
+		
+		String request = ""; // 수정요
 			
 		if (request != null) { // 요청 body의 값이 request 일때
 			// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
@@ -58,10 +58,10 @@ public class ChatServlet extends HttpServlet {
 			insert(requestData);
 			// 하나의 음식명을 반환하는 메소드
 			// 아는단어리스트에 새로 배운 단어 추가해야함
-			String foodName = foodName(knownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
+			String foodName = foodName(KnownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json;charset=utf-8");
-			String answer = "\"answer\": \"" + foodName + "\"}";
+			String answer = "{\"answer\": \"" + foodName + "\"}";
 			System.out.println("응답 answer : "+answer);
 			resp.getWriter().write(answer);
 		}
@@ -69,12 +69,14 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println("기억하는 단어들 : "+KnownWordList.getKnownWordList());
 		// 시험(은) 가능.. (answer, request 값 넣어보세요)
 		 //resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
+		
 
 		List<String> chat = splitString(req);
 		for (String elem : chat) {
-			System.out.println(elem);
+			System.out.println("단어들 : " +elem);
 		}
 
 		// 사용자 입력 문자열
@@ -88,7 +90,7 @@ public class ChatServlet extends HttpServlet {
 				System.out.println("응답 request : "+requestS);
 				resp.getWriter().write(requestS);
 			} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
-				String foodName = foodName(knownWordList.getKnownWordList());
+				String foodName = foodName(KnownWordList.getKnownWordList());
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
 				String answer = "{\"request\": \"" + unknownWord + "\"}";

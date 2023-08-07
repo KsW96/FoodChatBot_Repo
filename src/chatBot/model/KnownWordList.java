@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KnownWordList {
-	private List<String> knownWordList = new ArrayList<String>();
+	private static List<String> knownWordList = new ArrayList<String>();
 
-	public List<String> getKnownWordList() {
+	public static List<String> getKnownWordList() {
 		return knownWordList;
 	}
 
-	public void setKnownWordList(List<String> knownWordList) {
-		this.knownWordList = knownWordList;
+	public static void setKnownWordList(List<String> knownWordLists) {
+		knownWordList = knownWordLists;
 	}
 
 	

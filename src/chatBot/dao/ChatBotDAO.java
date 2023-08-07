@@ -28,8 +28,7 @@ public class ChatBotDAO {
 			}
 			
 			String li = "SELECT food, SUM(count) AS result FROM ("+plusSQL+") AS combined_table GROUP BY food order by result DESC LIMIT 1;";
-			System.out.println(fcList);
-			System.out.println(li);
+			System.out.println("dao에서 쿼리문 : " +li);
 			stmt = conn.prepareStatement(li);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -49,7 +48,6 @@ public class ChatBotDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<String> list = new ArrayList<String>();
-		System.out.println("words리스트 : " + words);
 		
 		try {
 			for (String word : words) {
