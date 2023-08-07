@@ -12,6 +12,10 @@ public class ReturnTranslate {
 			return "person";
 		} else if (target.equals("행동")) {
 			return "action";
+		} else if (target.equals("맛")) {
+			return "taste";
+		} else if (target.equals("음식")) {
+			return "food";
 		}
 
 		return "잘못된거임";
@@ -20,5 +24,6 @@ public class ReturnTranslate {
 //	ingredient 재료
 //	person 사람
 //	action 행동
+// "사람", "날씨", "장소", "재료", "행동", "맛", "음식"
 	}
 }

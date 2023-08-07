@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chatBot.dao.ChatBotDAO;
 import chatBot.model.KnownWordList;
-import chatBot.model.jsonModel.Request;
+import chatBot.model.jsonModel.WoCate;
 import chatBot.service.InsertService;
 import chatBot.service.RecommendService;
 import chatBot.service.UnKnownService;
@@ -62,6 +62,8 @@ public class ChatServlet extends HttpServlet {
 		System.out.println(body);
 		JSONParser parser = new JSONParser();
 		try {
+			// 커넥션 생성
+			Connection conn = DBUtil.getConnection();
 			JSONArray jsonArr = (JSONArray) parser.parse(body);
 			System.out.println(jsonArr.size());
 			// word + category words에 넣어주기
@@ -84,51 +86,85 @@ public class ChatServlet extends HttpServlet {
 			String categoryT = ReturnTranslate.Translate(category);
 			System.out.println("번역된 카테고리" + categoryT);
 
-			// 커넥션 생성
-			Connection conn = DBUtil.getConnection();
-			// words 에 넣어주기
-			is.insert(conn, strWord, categoryT);
+			if (categoryT.equals("거절")) {
 
-			// 해당 카테고리에 word, food 넣어주기
+			} else if (categoryT.equals("음식")) {
+				is.insertFood(conn, strWord);
+				// 모든 words의 word와 category 가져와서 해당카데고리에
+				// words foodTarget 넣어주기
+				List<WoCate> wordList = is.searchAllWord(conn);
+				for (WoCate wc : wordList) {
+					System.out.println("현재 words" + wc.getWord());
+					String currentWord = wc.getWord();
+					System.out.println("현재 words의 카테고리" + wc.getCategory());
+					String currentCategory = wc.getCategory();
+					is.insertCategory(conn, currentCategory, currentWord, strWord);
+				}
+			} else if (categoryT.equals("수락")) {
 
-			// 새로운 단어 학습할때 해당카데고리에 모든 음식을 추가해주기
+			} else {
+				// words 에 넣어주기
+				is.insert(conn, strWord, categoryT);
 
-			// 메소드 food 테이블 접근해서 모든 food 가지는 list<String> 만들기
+				// 해당 카테고리에 word, food 넣어주기
 
-			// food 테이블 접근해서 word, 모든 food 넣어주고
-			// 대화를 통해서 사용자가 선택한 food는 중복검사해서
-			// 없으면 넣어주기 -> 완전 새로운 food일 경우니까 word접근해서 모든 테이블에 행으로 추가해주기
+				// 새로운 단어 학습할때 해당카데고리에 모든 음식을 추가해주기
 
-			// String refer foods
-			for (int i = 2; i < jsonArr.size(); i++) {
-				System.out.println(jsonArr.get(i));
-				JSONObject food = (JSONObject) jsonArr.get(i);
-				String foodTarget = food.get("food").toString();
-				System.out.println("food: " + foodTarget);
-				is.insertCategory(conn, categoryT, strWord, foodTarget);
+				// 메소드 food 테이블 접근해서 모든 food 가지는 list<String> 만들기
+
+				// food 테이블 접근해서 word, 모든 food 넣어주고
+				// 대화를 통해서 사용자가 선택한 food는 중복검사해서
+				// 없으면 넣어주기 -> 완전 새로운 food일 경우니까 word접근해서 모든 테이블에 행으로 추가해주기
+
+				// String refer foods
+				// 먼저 food에 있는거 다때려 박고
+				List<String> foodList = is.searchAllFood(conn);
+				System.out.println("현재 모든 푸드리스트" + foodList.toString());
+				for (String str : foodList) {
+					is.insertCategory(conn, categoryT, strWord, str);
+				}
+				// 중복검사해서 있는거 카운트++, 없는거는 추가해주는데 새로운 food니까 food에 넣고, words에 접근해서 모든행들에 새로운
+				// food넣어주기
+				for (int i = 2; i < jsonArr.size(); i++) {
+
+					System.out.println(jsonArr.get(i));
+					JSONObject food = (JSONObject) jsonArr.get(i);
+					String foodTarget = food.get("food").toString();
+
+					if (!is.searchFood(conn, foodTarget)) {
+						System.out.println("food: " + foodTarget);
+						// food에 해당 새로운 음식인 foodTarget 넣어주고
+						is.insertFood(conn, foodTarget);
+						// 모든 words의 word와 category 가져와서 해당카데고리에
+						// words foodTarget 넣어주기
+						List<WoCate> wordList = is.searchAllWord(conn);
+						for (WoCate wc : wordList) {
+							System.out.println("현재 words" + wc.getWord());
+							String currentWord = wc.getWord();
+							System.out.println("현재 words의 카테고리" + wc.getCategory());
+							String currentCategory = wc.getCategory();
+							is.insertCategory(conn, currentCategory, currentWord, foodTarget);
+						}
+					}
+				}
 			}
+			// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
+			String requestData = null;
+//				insert(requestData);
+			// 하나의 음식명을 반환하는 메소드
+			// 아는단어리스트에 새로 배운 단어 추가해야함
+			String foodName = foodName(KnownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json;charset=utf-8");
+			String answer = "{\"answer\": \"" + foodName + "\"}";
+			System.out.println("응답 answer : " + answer);
+			resp.getWriter().write(answer);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		Request request = mapper.readValue(jsonItems[0], Request.class);
-
-		if (request != null) { // 요청 body의 값이 request 일때
-			// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
-			String requestData = null;
-//			insert(requestData);
-			// 하나의 음식명을 반환하는 메소드
-			// 아는단어리스트에 새로 배운 단어 추가해야함
-			String foodName = foodName(KnownWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json;charset=utf-8");
-			String answer = "\"answer\": \"" + foodName + "\"}";
-			System.out.println("응답 answer : " + answer);
-
-			resp.getWriter().write(answer);
-		}
 	}
 
 	@Override
