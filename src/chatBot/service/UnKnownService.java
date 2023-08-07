@@ -22,6 +22,7 @@ public class UnKnownService {
 			List<String> unKnownList = dao.unknownWords(wordList, conn);
 			wordList.removeAll(unKnownList);
 			knownList.setKnownWordList(wordList);
+			System.out.println("ai에게 기억시키는 단어들 : " + knownList.getKnownWordList());
 			if (unKnownList.size() > 0) {
 				return unKnownList.get(0);
 			}
