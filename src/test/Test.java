@@ -21,15 +21,19 @@ import util.DBUtil;
 public class Test {
 	public static void main(String[] args) {
 		System.out.println("시작");
-		ObjectMapper mapper = new ObjectMapper();
-		String json = "[{\"request\":\"요청\"},{\"food\":\"짜장\"}]";
+		ChatBotDAO dao = new ChatBotDAO();
+		
+		Connection conn = null;
 		try {
-			Request request = mapper.readValue(json, Request.class);
-			Food food = mapper.readValue(json, Food.class);
-			System.out.println(food.getFood());
-		} catch (JsonProcessingException e) {
+			conn = DBUtil.getConnection();
+			dao.updateByCount(conn, 1, "ingredient", "말", "죽");
+			System.out.println("정상");
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("실패");
+		} finally {
+			DBUtil.close(conn);
 		}
 	}
 }

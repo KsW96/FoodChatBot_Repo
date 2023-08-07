@@ -10,11 +10,11 @@ import java.util.List;
 import org.junit.Test;
 
 import chatBot.dao.ChatBotDAO;
-import chatBot.model.KnownWordList;
+import chatBot.model.RememberWordList;
 import util.DBUtil;
 
 public class TestUnKnownService {
-	KnownWordList knownList = new KnownWordList();
+	RememberWordList knownList = new RememberWordList();
 
 	public String unknownWord(List<String> wordList) {
 		ChatBotDAO dao = new ChatBotDAO();

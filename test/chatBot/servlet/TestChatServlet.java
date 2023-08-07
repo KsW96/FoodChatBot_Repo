@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import chatBot.model.KnownWordList;
+import chatBot.model.RememberWordList;
 import chatBot.service.InsertService;
 import chatBot.service.UnKnownService;
 import chatBot.service.RecommendService;
@@ -23,7 +23,7 @@ public class TestChatServlet extends HttpServlet {
 	UnKnownService us = new UnKnownService();
 	RecommendService rs = new RecommendService();
 	InsertService is = new InsertService();
-	KnownWordList knownWordList = new KnownWordList();
+	RememberWordList knownWordList = new RememberWordList();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
