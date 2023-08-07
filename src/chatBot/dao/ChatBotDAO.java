@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import chatBot.model.WordCategory;
 import chatBot.model.FoodCount;
+import chatBot.model.WordCategory;
 import util.DBUtil;
 
 public class ChatBotDAO {
@@ -20,14 +20,15 @@ public class ChatBotDAO {
 			String union = "UNION ALL ";
 			for (int i = 0; i < fcList.size(); i++) {
 				String tableName = fcList.get(i).getCategory();
-				String word = "'"+fcList.get(i).getWord()+"'";
+				String word = "'" + fcList.get(i).getWord() + "'";
 				if (i != 0) {
 					plusSQL += union;
 				}
 				plusSQL += "SELECT food, count FROM " + tableName + " where word = " + word;
 			}
-			
-			String li = "SELECT food, SUM(count) AS result FROM ("+plusSQL+") AS combined_table GROUP BY food order by result DESC LIMIT 1;";
+
+			String li = "SELECT food, SUM(count) AS result FROM (" + plusSQL
+					+ ") AS combined_table GROUP BY food order by result DESC LIMIT 1;";
 			System.out.println(fcList);
 			System.out.println(li);
 			stmt = conn.prepareStatement(li);
@@ -50,7 +51,7 @@ public class ChatBotDAO {
 		ResultSet rs = null;
 		List<String> list = new ArrayList<String>();
 		System.out.println("words리스트 : " + words);
-		
+
 		try {
 			for (String word : words) {
 				stmt = conn.prepareStatement("SELECT * FROM foodchat.words WHERE word = ?;");
@@ -86,15 +87,15 @@ public class ChatBotDAO {
 		}
 		return null;
 	}
-	
+
 	public List<String> getExceptions(Connection conn) throws SQLException {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<String> list = new ArrayList<String>();
 
 		try {
-				stmt = conn.prepareStatement("SELECT * FROM foodchat.exceptions");
-				rs = stmt.executeQuery();
+			stmt = conn.prepareStatement("SELECT * FROM foodchat.exceptions");
+			rs = stmt.executeQuery();
 			while (!rs.next()) {
 				String word = rs.getString("word");
 				list.add(word);
@@ -106,11 +107,39 @@ public class ChatBotDAO {
 		return list;
 	}
 
+	public void insertWord(Connection conn, String word, String category) {
+		PreparedStatement stmt = null;
 
-	public void insertWord(String requestData) {
-		// TODO Auto-generated method stub
-		
+		try {
+			stmt = conn.prepareStatement("insert into words (word, category) values (?,?);");
+			stmt.setString(1, word);
+			stmt.setString(2, category);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally
+
+		{
+			DBUtil.close(stmt);
+		}
 	}
-	
-	
+
+	public void insertCategory(Connection conn, String category, String word, String food) {
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement("insert into " + category + " (word, food) values (?,?);");
+//			stmt.setString(1, category);
+			stmt.setString(1, word);
+			stmt.setString(2, food);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally
+
+		{
+			DBUtil.close(stmt);
+		}
+	}
+
 }
