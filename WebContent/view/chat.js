@@ -85,13 +85,25 @@ function handleResponse(data) {
       "모르는 단어가 있다. '" + data.request + "'가 뭐임"
     );
     addOptions(
-      ["사람", "날씨", "장소", "재료", "행동", "맛", "음식"],
+      [
+        "사람",
+        "날씨",
+        "장소",
+        "재료",
+        "행동",
+        "맛",
+        "음식",
+        "예외",
+        "예산",
+        "양",
+      ],
       "category"
     );
   }
 }
 
 function addOptions(options, id) {
+  message.disabled = true;
   const optionsElement = document.createElement("div");
   optionsElement.id = "optionsDiv";
   options.forEach((option) => {
@@ -105,6 +117,7 @@ function addOptions(options, id) {
 }
 
 function handleOptionSelect(option, id) {
+  message.disabled = false;
   const obj = {
     [id]: option,
   };
@@ -123,11 +136,11 @@ function handleOptionSelect(option, id) {
       addOptionList({ category: "수락" });
     }
     fetchData(optionList, "PUT");
-    console.log(optionList);
     optionList = [];
   } else if (id === "category" && option === "음식") {
     addMessage("anotherMsg", "오키 알았어.");
     fetchData(optionList, "PUT").then(handleResponse);
+    optionList = [];
   } else if (id === "category" || option === "있어") {
     addMessage("anotherMsg", "그것은 어떤음식과 매칭되나?");
   } else if (id === "food") {
@@ -135,8 +148,8 @@ function handleOptionSelect(option, id) {
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
     fetchData(optionList, "PUT").then(handleResponse);
-    submit.id = "submit";
     optionList = [];
+    submit.id = "submit";
   }
   if (id !== "food") {
     document.getElementById("optionsDiv").remove();
@@ -159,7 +172,7 @@ function chatBotAnswer() {
     "제발 그냥 먹어라",
     "그냥 이거 무조건 먹어라.",
   ];
-  var num = Math.floor(Math.random() * 4);
+  var num = Math.floor(Math.random() * 3);
 
   if (nope === 0) {
     addMessage("anotherMsg", first[num]);
