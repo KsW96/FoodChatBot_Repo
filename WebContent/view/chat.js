@@ -4,6 +4,7 @@ const chatLog = document.getElementById("chatLog");
 const resolved = document.getElementById("resolved");
 let optionList = [];
 let nope = 0;
+const foodList = ["떡볶이", "갈비탕", "돈가스", "죽", "돈가스"];
 
 function addOptionList(obj) {
   optionList.push(obj);
@@ -24,17 +25,26 @@ function send(e) {
     e.preventDefault();
   }
 
-  addMessage("myMsg", message.value);
-  fetchData({ chat: message.value }, "POST").then(handleResponse);
+  // 여기서 이게 음식인지 확인해야함...
+  if (foodList.includes(message.value)) {
+    handleOptionSelect(message.value, "food");
+  } else {
+    addMessage("myMsg", message.value);
+    fetchData({ chat: message.value }, "POST").then(handleResponse);
+  }
+  message.value = "";
 }
 
 function handleResponse(data) {
-  message.value = "";
   // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
     chatBotAnswer();
+    if (data.answer === "") {
+      addMessage("anotherMsg", "미안한데 못알아들었어. 다시 부탁해줄래?");
+    }
+    addOptionList((obj = { request: data.answer }));
     addMessage("anotherMsg", data.answer + " 어때?");
-    addOptions(["그래", "아닌듯"], "chat");
+    addOptions(["그래", "아닌듯"], "request");
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
   if (data.request !== undefined) {
@@ -43,7 +53,10 @@ function handleResponse(data) {
       "anotherMsg",
       "모르는 단어가 있다. '" + data.request + "'가 뭐임"
     );
-    addOptions(["사람", "날씨", "장소", "재료", "행동"], "category");
+    addOptions(
+      ["사람", "날씨", "장소", "재료", "행동", "맛", "음식"],
+      "category"
+    );
   }
 }
 
@@ -66,27 +79,31 @@ function handleOptionSelect(option, id) {
   };
   addOptionList(obj);
   console.log(optionList);
-  if (id === "chat") {
+  addMessage("myMsg", option);
+  if (id === "chat" && id === "request") {
     optionList.pop();
   }
   if (option === "아닌듯") {
     nope = nope + 1;
-    addMessage("myMsg", option);
+    addOptionList({ category: "거절" });
     addMessage("anotherMsg", "그럼 뭐먹고 싶은데?");
+    fetchData(optionList, "PUT");
+    console.log(optionList);
+  } else if (id === "category" && option === "음식") {
+    addMessage("anotherMsg", "오키 알았어.");
+    fetchData(optionList, "PUT").then(handleResponse);
   } else if (id === "category" || option === "있어") {
-    addMessage("myMsg", option);
-    addMessage("anotherMsg", "그것은 어떤음식과 매칭?");
-    addOptions(["떡볶이", "갈비탕", "돈가스", "죽"], "food");
+    addMessage("anotherMsg", "그것은 어떤음식과 매칭되나?");
   } else if (id === "food") {
-    addMessage("myMsg", option);
     addMessage("anotherMsg", "또 있음?");
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
-    addMessage("myMsg", option);
     fetchData(optionList, "PUT").then(handleResponse);
     optionList = [];
   }
-  document.getElementById("optionsDiv").remove();
+  if (id !== "food") {
+    document.getElementById("optionsDiv").remove();
+  }
 }
 
 function chatBotAnswer() {
