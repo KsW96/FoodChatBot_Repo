@@ -9,6 +9,7 @@ import java.util.List;
 
 import chatBot.model.FoodCount;
 import chatBot.model.WordCategory;
+import chatBot.model.jsonModel.WoCate;
 import util.DBUtil;
 
 public class ChatBotDAO {
@@ -131,7 +132,7 @@ public class ChatBotDAO {
 		PreparedStatement stmt = null;
 
 		try {
-			stmt = conn.prepareStatement("insert into " + category + " (word, food) values (?,?);");
+			stmt = conn.prepareStatement("insert into " + category + " (word, food, count) values (?,?,100);");
 //			stmt.setString(1, category);
 			stmt.setString(1, word);
 			stmt.setString(2, food);
@@ -145,4 +146,84 @@ public class ChatBotDAO {
 		}
 	}
 
+	public boolean searchFood(Connection conn, String food) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn.prepareStatement("SELECT * FROM food where food = ?;");
+			stmt.setString(1, food);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return false;
+	}
+
+	public List<String> searchAllFood(Connection conn) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<String> list = new ArrayList<String>();
+
+		try {
+			stmt = conn.prepareStatement("SELECT food FROM foodchat.food");
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String word = rs.getString("food");
+				list.add(word);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return list;
+	}
+
+	public List<WoCate> searchAllWord(Connection conn) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<WoCate> list = new ArrayList<>();
+
+		try {
+			stmt = conn.prepareStatement("SELECT * FROM foodchat.words;");
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String word = rs.getString("word");
+				String category = rs.getString("category");
+				WoCate wordAndCategory = new WoCate(word, category);
+				list.add(wordAndCategory);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return list;
+	}
+
+	public int insertFood(Connection conn, String food) {
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement("insert into food (food) values (?);");
+			stmt.setString(1, food);
+			return stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally
+
+		{
+			DBUtil.close(stmt);
+		}
+		return -1;
+	}
 }
