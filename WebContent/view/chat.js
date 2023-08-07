@@ -4,7 +4,28 @@ const chatLog = document.getElementById("chatLog");
 const resolved = document.getElementById("resolved");
 let optionList = [];
 let nope = 0;
-const foodList = ["떡볶이", "갈비탕", "돈가스", "죽", "돈가스"];
+const foodList = [
+  "갈비",
+  "갈비탕",
+  "감자탕",
+  "국밥",
+  "국수",
+  "단팥죽",
+  "돈가스",
+  "된장찌개",
+  "떡볶이",
+  "마라탕",
+  "미음",
+  "보쌈",
+  "삼겹살",
+  "스파게티",
+  "제육",
+  "족발",
+  "짜장면",
+  "치킨",
+  "칼국수",
+  "피자",
+];
 
 function addOptionList(obj) {
   optionList.push(obj);
@@ -25,12 +46,21 @@ function send(e) {
     e.preventDefault();
   }
 
-  // 여기서 이게 음식인지 확인해야함...
+  addMessage("myMsg", message.value);
+  fetchData({ chat: message.value }, "POST").then(handleResponse);
+  message.value = "";
+}
+
+function addFood(e) {
+  if (e !== null) {
+    e.preventDefault();
+  }
+
   if (foodList.includes(message.value)) {
     handleOptionSelect(message.value, "food");
   } else {
     addMessage("myMsg", message.value);
-    fetchData({ chat: message.value }, "POST").then(handleResponse);
+    addMessage("anotherMsg", "알수없는 음식. 다시말해달라");
   }
   message.value = "";
 }
@@ -44,6 +74,7 @@ function handleResponse(data) {
     }
     addOptionList((obj = { request: data.answer }));
     addMessage("anotherMsg", data.answer + " 어때?");
+    addMessage("anotherMsg", "<img src = '" + data.img + "' />");
     addOptions(["그래", "아닌듯"], "request");
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
@@ -80,15 +111,20 @@ function handleOptionSelect(option, id) {
   addOptionList(obj);
   console.log(optionList);
   addMessage("myMsg", option);
-  if (id === "chat" && id === "request") {
+  if (id === "chat" || id === "request") {
     optionList.pop();
   }
-  if (option === "아닌듯") {
-    nope = nope + 1;
-    addOptionList({ category: "거절" });
-    addMessage("anotherMsg", "그럼 뭐먹고 싶은데?");
+  if (id === "request") {
+    if (option === "아닌듯") {
+      nope = nope + 1;
+      addOptionList({ category: "거절" });
+      addMessage("anotherMsg", "그럼 뭐먹고 싶은데?");
+    } else {
+      addOptionList({ category: "수락" });
+    }
     fetchData(optionList, "PUT");
     console.log(optionList);
+    optionList = [];
   } else if (id === "category" && option === "음식") {
     addMessage("anotherMsg", "오키 알았어.");
     fetchData(optionList, "PUT").then(handleResponse);
@@ -99,6 +135,7 @@ function handleOptionSelect(option, id) {
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
     fetchData(optionList, "PUT").then(handleResponse);
+    submit.id = "submit";
     optionList = [];
   }
   if (id !== "food") {
@@ -146,6 +183,14 @@ function scrollToBottom() {
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
+function handleButtonClick(e) {
+  if (optionList.length === 0) {
+    send(e);
+  } else {
+    addFood(e);
+  }
+}
+
 window.addEventListener("load", () => {
-  submit.addEventListener("click", send);
+  submit.addEventListener("click", handleButtonClick);
 });
