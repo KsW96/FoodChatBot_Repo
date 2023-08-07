@@ -73,6 +73,7 @@ function handleResponse(data) {
       addMessage("anotherMsg", "미안한데 못알아들었어. 다시 부탁해줄래?");
     }
     addOptionList((obj = { request: data.answer }));
+	localStorage.setItem('keyword', data.answer);
     addMessage("anotherMsg", data.answer + " 어때?");
     addMessage("anotherMsg", "<img src = '" + data.img + "' />");
     addOptions(["그래", "아닌듯"], "request");
@@ -134,6 +135,8 @@ function handleOptionSelect(option, id) {
       addMessage("anotherMsg", "그럼 뭐먹고 싶은데?");
     } else {
       addOptionList({ category: "수락" });
+      addMessage("anotherMsg", "근처 음식점을 소개해줄게!");
+      addMessage("anotherMsg", "<a href = 'view/location.html'>음식점 보러가기</a>");
     }
     fetchData(optionList, "PUT");
     optionList = [];

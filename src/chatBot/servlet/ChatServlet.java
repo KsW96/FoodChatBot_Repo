@@ -28,6 +28,7 @@ import chatBot.model.jsonModel.WoCate;
 import chatBot.service.InsertService;
 import chatBot.service.RecommendService;
 import chatBot.service.UnKnownService;
+import imgFinder.ImageReturner;
 import nlp.NLP;
 import util.DBUtil;
 import util.ReturnTranslate;
@@ -170,9 +171,6 @@ public class ChatServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("기억하는 단어들 : " + KnownWordList.getKnownWordList());
-		// 시험(은) 가능.. (answer, request 값 넣어보세요)
-		// resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
-		// resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
 
 		List<String> chat = splitString(req);
 		for (String elem : chat) {
@@ -193,9 +191,12 @@ public class ChatServlet extends HttpServlet {
 				String foodName = foodName(KnownWordList.getKnownWordList());
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				String answer = "{\"answer\": \"" + foodName + "\"}";
+				JSONObject answer = new JSONObject();
+				String url = ImageReturner.imageReturn(foodName);
+				answer.put("answer", foodName);
+				answer.put("img", url);
 				System.out.println("응답 answer : " + answer);
-				resp.getWriter().write(answer);
+				resp.getWriter().write(String.valueOf(answer));
 			}
 		} else {
 			// 문제있는 상황에 여기로 옵니다.
