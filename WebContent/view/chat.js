@@ -3,6 +3,7 @@ const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
 const resolved = document.getElementById("resolved");
 let optionList = [];
+let nope = 0;
 
 function addOptionList(obj) {
   optionList.push(obj);
@@ -31,16 +32,19 @@ function handleResponse(data) {
   message.value = "";
   // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
-    addMessage("anotherMsg", "이건 어떠세요?");
-    addMessage("anotherMsg", data.answer);
+    chatBotAnswer();
+    addMessage("anotherMsg", data.answer + " 어때?");
     addOptions(["그래", "아닌듯"], "chat");
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
   if (data.request !== undefined) {
-    addOptionList(obj = { request: data.request })
-    addMessage("anotherMsg", "모르는 단어가 있다. '"+ data.request + "'가 뭐임");
+    addOptionList((obj = { request: data.request }));
+    addMessage(
+      "anotherMsg",
+      "모르는 단어가 있다. '" + data.request + "'가 뭐임"
+    );
     addOptions(["사람", "날씨", "장소", "재료", "행동"], "category");
-  } 
+  }
 }
 
 function addOptions(options, id) {
@@ -58,16 +62,17 @@ function addOptions(options, id) {
 
 function handleOptionSelect(option, id) {
   const obj = {
-    [id] : option,
-  }
-  addOptionList(obj)
+    [id]: option,
+  };
+  addOptionList(obj);
   console.log(optionList);
   if (id === "chat") {
     optionList.pop();
   }
   if (option === "아닌듯") {
+    nope = nope + 1;
     addMessage("myMsg", option);
-    fetchData(obj, "POST").then(handleResponse);
+    addMessage("anotherMsg", "그럼 뭐먹고 싶은데?");
   } else if (id === "category" || option === "있어") {
     addMessage("myMsg", option);
     addMessage("anotherMsg", "그것은 어떤음식과 매칭?");
@@ -82,6 +87,33 @@ function handleOptionSelect(option, id) {
     optionList = [];
   }
   document.getElementById("optionsDiv").remove();
+}
+
+function chatBotAnswer() {
+  let first = [
+    "내가 추천하는 음식은 이거야!",
+    "이걸 먹어보는 건 어때?",
+    "그냥 이거 무조건 먹어라.",
+  ];
+  let second = [
+    "흠.. 그러면 이건 어때?",
+    "니 말을 알겠어. 이거 먹어",
+    "그냥 이거 무조건 먹어라.",
+  ];
+  let third = [
+    "너 되게 까다롭구나?",
+    "제발 그냥 먹어라",
+    "그냥 이거 무조건 먹어라.",
+  ];
+  var num = Math.floor(Math.random() * 4);
+
+  if (nope === 0) {
+    addMessage("anotherMsg", first[num]);
+  } else if (nope === 1) {
+    addMessage("anotherMsg", second[num]);
+  } else {
+    addMessage("anotherMsg", third[num]);
+  }
 }
 
 function addMessage(senderClass, message) {

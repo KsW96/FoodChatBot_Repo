@@ -31,6 +31,9 @@ public class ChatBotDAO {
 					+ ") AS combined_table GROUP BY food order by result DESC LIMIT 1;";
 			System.out.println(fcList);
 			System.out.println(li);
+
+//			String li = "SELECT food, SUM(count) AS result FROM ("+plusSQL+") AS combined_table GROUP BY food order by result DESC LIMIT 1;";
+			System.out.println("dao에서 쿼리문 : " + li);
 			stmt = conn.prepareStatement(li);
 			rs = stmt.executeQuery();
 			while (rs.next()) {

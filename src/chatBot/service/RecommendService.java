@@ -22,14 +22,14 @@ public class RecommendService {
 				String category = dao.getCategory(conn, knownWord);
 				fcList.add(new WordCategory(knownWord, category));
 			}
-			System.out.println("fcList : " + fcList);
-			System.out.println("knownList : " + knownList);
 			String foodName = dao.getFoodName(conn, fcList);
 			return foodName;
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException();
+		} finally {
+			DBUtil.close(conn);
 		}
 	}
 
@@ -37,19 +37,18 @@ public class RecommendService {
 	public List<String> removeException(List<String> list) {
 		Connection conn = null;
 		List<String> exceptionList = new ArrayList<>();
-		List<String> words = new ArrayList<>();
 		try {
 			conn = DBUtil.getConnection();
 			exceptionList = dao.getExceptions(conn);
+			list.removeAll(exceptionList);
+			if (list.size() > 0) {
+				return list;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DBUtil.close(conn);
 		}
-
-		words.addAll(list);
-		words.removeAll(exceptionList);
-
-		return words;
+		return null;
 	}
 }
