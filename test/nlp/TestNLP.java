@@ -103,7 +103,7 @@ public class TestNLP {
 			resultList.add(s);
 		}
 
-		System.out.println("리스트 출력이요 : " + resultList);
+		System.out.println("단어 리스트 : " + resultList);
 
 	}
 }

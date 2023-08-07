@@ -93,7 +93,7 @@ public class ChatServlet extends HttpServlet {
 				String foodName = foodName(KnownWordList.getKnownWordList());
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				String answer = "{\"request\": \"" + unknownWord + "\"}";
+				String answer = "{\"answer\": \"" + foodName + "\"}";
 				System.out.println("응답 answer : "+answer);
 				resp.getWriter().write(answer);
 			}
