@@ -159,7 +159,7 @@ function chatBotAnswer() {
     "제발 그냥 먹어라",
     "그냥 이거 무조건 먹어라.",
   ];
-  var num = Math.floor(Math.random() * 4);
+  var num = Math.floor(Math.random() * 3);
 
   if (nope === 0) {
     addMessage("anotherMsg", first[num]);
