@@ -71,7 +71,7 @@ public class TestChatServlet extends HttpServlet {
 	}
 	
 	public void insert(String requestData) {
-		is.insert(requestData);
+//		is.insert(requestData);
 	}
 
 	public String foodName(List<String> knownList) {

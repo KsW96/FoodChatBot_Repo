@@ -14,6 +14,12 @@ public class ReturnTranslate {
 			return "action";
 		} else if (target.equals("맛")) {
 			return "taste";
+		} else if (target.equals("예외")) {
+			return "exceptions";
+		} else if (target.equals("양")) {
+			return "amount";
+		} else if (target.equals("예산")) {
+			return "budget";
 		} else if (target.equals("음식")) {
 			return "food";
 		}

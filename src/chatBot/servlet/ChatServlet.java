@@ -29,6 +29,7 @@ import chatBot.service.InsertService;
 import chatBot.service.RecommendService;
 import chatBot.service.UnKnownService;
 import chatBot.service.UpdateService;
+import imgFinder.ImageReturner;
 import nlp.NLP;
 import util.DBUtil;
 import util.ReturnTranslate;
@@ -179,13 +180,13 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 시험(은) 가능.. (answer, request 값 넣어보세요)
-		// resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
-		// resp.getWriter().write("{\"request\": \"" + "밥" + "\"}");
+		System.out.println("기억하는 단어들 : " + RememberWordList.getKnownWordList());
 
+		JSONObject answer = new JSONObject();
 		List<String> chat = splitString(req);
-		for (String elem : chat) {
-			System.out.println("단어들 : " + elem);
+		if (chat == null) {
+			answer.put("answer", "");
+			resp.getWriter().write(String.valueOf(answer));
 		}
 
 		// 사용자 입력 문자열
@@ -193,19 +194,18 @@ public class ChatServlet extends HttpServlet {
 			// chat을 자연어 처리해서 wordList로 넣는다
 			String unknownWord = us.unknownWord(chat); // 단어 리스트를 넣어서 모르는 단어 하나를 받는다
 			if (unknownWord != null) { // 모르는 단어가 있을 때 - 모르는 단어가 없으면 null을 반환해서 조건처리한다
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json;charset=utf-8");
 				String requestS = "{\"request\": \"" + unknownWord + "\"}";
 				System.out.println("응답 request : " + requestS);
 				resp.getWriter().write(requestS);
 			} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
 				String foodName = foodName(RememberWordList.getKnownWordList());
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				String answer = "{\"answer\": \"" + foodName + "\"}";
+				answer.put("answer", foodName);
+				answer.put("img", ImageReturner.imageReturn(foodName));
 				System.out.println("응답 answer : " + answer);
-				resp.getWriter().write(answer);
+				resp.getWriter().write(String.valueOf(answer));
 			}
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json;charset=utf-8");
 		} else {
 			// 문제있는 상황에 여기로 옵니다.
 			System.out.println("서블릿에서 문제가 있습니다.");

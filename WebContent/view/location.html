@@ -58,10 +58,10 @@
     </div>
 </div>
 
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=71b9d2c6247ea53b45bef7ccaca10f0e&libraries=services"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8d79b30b4f5b1bcb5390816b0a822de7&libraries=services"></script>
 <script>
 // 테스트를 위해 키워드 입력 받는 곳
-var keyword = prompt("키워드 입력");
+var keyword = "부전시장 " + localStorage.getItem("keyword");
 console.log(keyword);
 
 
@@ -81,7 +81,7 @@ function getCurrentLocation() {
             }
         );
     } else {
-        console.error("Geolocation을 지원하지 않습니다.");
+        console.error("geolocation을 지원하지 않습니다.");
         console.log("최신판");
     }
 }
