@@ -45,8 +45,20 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.setStatus(200);
-		resp.setHeader("Content-Type", "application/json;charset=utf-8");
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			JSONObject list = new JSONObject();
+			list.put("list", is.searchAllFood(conn));
+			System.out.println("응답 answer : " + list);
+			resp.getWriter().write(String.valueOf(list));
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json;charset=utf-8");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
 	}
 
 	@Override
