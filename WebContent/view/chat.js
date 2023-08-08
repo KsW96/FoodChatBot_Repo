@@ -2,34 +2,30 @@ const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
 const resolved = document.getElementById("resolved");
+const listBox = document.getElementById("listBox");
 let optionList = [];
 let nope = 0;
-const foodList = [
-  "갈비",
-  "갈비탕",
-  "감자탕",
-  "국밥",
-  "국수",
-  "단팥죽",
-  "돈가스",
-  "된장찌개",
-  "떡볶이",
-  "마라탕",
-  "미음",
-  "보쌈",
-  "삼겹살",
-  "스파게티",
-  "제육",
-  "족발",
-  "짜장면",
-  "치킨",
-  "칼국수",
-  "피자",
-];
+const foodList = [];
 const hello = "반갑습니다. 음식 추천을 도와드릴 dungs라고 합니다.";
 
 function firstMsg() {
   addMessage("anotherMsg", hello);
+}
+
+function setFoodList() {
+  fetch("http://localhost:8080/foodChatBot/chat")
+    .then((resp) => resp.json())
+    .then((data) => {
+      console.log(data.list);
+      foodList.push(...data.list);
+      foodList.forEach((itemText) => {
+        const listItem = document.createElement("div");
+        listItem.className = "list-item";
+        listItem.textContent = itemText;
+        listBox.appendChild(listItem);
+      });
+    });
+  console.log(foodList);
 }
 
 function addOptionList(obj) {
@@ -51,6 +47,9 @@ function send(e) {
     e.preventDefault();
   }
 
+  if (message.value.trim() === "") {
+    return;
+  }
   addMessage("myMsg", message.value);
   fetchData({ chat: message.value }, "POST").then(handleResponse);
   message.value = "";
@@ -77,12 +76,12 @@ function handleResponse(data) {
       addMessage("anotherMsg", "미안한데 못알아들었어. 다시 부탁해줄래?");
     } else {
       chatBotAnswer();
-	  addOptionList((obj = { request: data.answer }));
-	  localStorage.setItem('keyword', data.answer);
-	  addMessage("anotherMsg", data.answer + " 어때?");
-    addImg("anotherMsg", "<img src = '" + data.img + "' height = '300' />");
-    addOptions(["그래", "아닌듯"], "request");
-	}
+      addOptionList((obj = { request: data.answer }));
+      localStorage.setItem("keyword", data.answer);
+      addMessage("anotherMsg", data.answer + " 어때?");
+      addImg("anotherMsg", "<img src = '" + data.img + "' height = '300' />");
+      addOptions(["그래", "아닌듯"], "request");
+    }
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
   if (data.request !== undefined) {
@@ -122,7 +121,7 @@ function addOptions(options, id) {
     });
     chatLog.appendChild(optionsElement);
     scrollToBottom();
-  }, 1500)
+  }, 1500);
 }
 
 function handleOptionSelect(option, id) {
@@ -144,7 +143,10 @@ function handleOptionSelect(option, id) {
     } else {
       addOptionList({ category: "수락" });
       addMessage("anotherMsg", "근처 음식점을 소개해줄게!");
-      addImg("anotherMsg", "<a href = 'view/location.html'>음식점 보러가기</a>");
+      addImg(
+        "anotherMsg",
+        "<a href = 'view/location.html'>음식점 보러가기</a>"
+      );
     }
     fetchData(optionList, "PUT");
     optionList = [];
@@ -154,6 +156,7 @@ function handleOptionSelect(option, id) {
     optionList = [];
   } else if (id === "category" || option === "있어") {
     addMessage("anotherMsg", "그것은 어떤음식과 매칭되나?");
+    setFoodList();
   } else if (id === "food") {
     addMessage("anotherMsg", "또 있음?");
     addOptions(["있어", "없어"], "chat");
@@ -201,13 +204,20 @@ function addImg(senderClass, message) {
     msgDiv.innerHTML = '<span class="msg">' + message + "</span>";
     chatLog.appendChild(msgDiv);
     scrollToBottom();
-  }, 1500)
+  }, 1500);
 }
 
 function addMessage(senderClass, message) {
+  const nameDiv = document.createElement("div");
   const msgDiv = document.createElement("div");
   msgDiv.classList.add(senderClass);
-  msgDiv.innerHTML = '<span class="msg"></span>'; // 타이핑 효과용 빈 span 추가
+  if (senderClass === "anotherMsg") {
+    nameDiv.innerHTML = "<span class='anotherName'>DUNGS</span>";
+  } else if (senderClass === "myMsg") {
+    nameDiv.innerHTML = "<span class='myName'>me</span>";
+  }
+  msgDiv.innerHTML = '<span class="msg"></span>';
+  chatLog.appendChild(nameDiv);
   chatLog.appendChild(msgDiv);
   simulateTyping(message, msgDiv.querySelector(".msg"));
   scrollToBottom();
@@ -216,10 +226,10 @@ function addMessage(senderClass, message) {
 function simulateTyping(content, element) {
   let i = 0;
   const typingInterval = 60; // 타이핑 속도 조절 가능
-  const typingDelay = 500;   // 타이핑 효과 시작 전 딜레이
+  const typingDelay = 500; // 타이핑 효과 시작 전 딜레이
 
-  setTimeout(function() {
-    const typing = setInterval(function() {
+  setTimeout(function () {
+    const typing = setInterval(function () {
       if (element && i < content.length) {
         element.textContent += content[i++];
       } else {
@@ -229,7 +239,6 @@ function simulateTyping(content, element) {
   }, typingDelay);
   scrollToBottom();
 }
-
 
 function scrollToBottom() {
   var chatLog = document.getElementById("chatLog");
@@ -245,6 +254,6 @@ function handleButtonClick(e) {
 }
 
 window.addEventListener("load", () => {
-  firstMsg(); 
+  firstMsg();
   submit.addEventListener("click", handleButtonClick);
 });
