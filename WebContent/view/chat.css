@@ -181,3 +181,41 @@ button {
   background-color: #f0f0f0;
   border-color: #bbb;
 }
+
+.dropdown {
+  display: none;
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.show-dropdown {
+  display: block;
+  animation: slide-up 0.3s ease-in-out;
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(60px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* 추가된 부분: 드롭다운 아이템 스타일 */
+.dropdown-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* 추가된 부분: 드롭다운 아이템 hover 스타일 */
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
