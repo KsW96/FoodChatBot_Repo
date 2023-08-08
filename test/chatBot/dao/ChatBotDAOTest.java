@@ -36,7 +36,6 @@ public class ChatBotDAOTest {
 		words.add("선지");
 		words.add("화창");
 		words.add("모름");
-		냥곤 야옹야옹야옹야야ㅑ아아아아ㅏ아오오옹
 		List<String> unknownWords = dao.unknownWords(words, conn);
 		List<String> checkList = new ArrayList<String>();
 		checkList.add("모름");
