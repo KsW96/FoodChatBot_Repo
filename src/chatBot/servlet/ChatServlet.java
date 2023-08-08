@@ -178,6 +178,7 @@ public class ChatServlet extends HttpServlet {
 				// 하나의 음식명을 반환하는 메소드
 				// 아는단어리스트에 새로 배운 단어 추가해야함
 				RememberWordList.addKnownWordList(strWord);
+				System.out.println("두겟에서 모르는단어 없을때 : " + RememberWordList.getKnownWordList());
 				String foodName = foodName(RememberWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
@@ -217,6 +218,7 @@ public class ChatServlet extends HttpServlet {
 					System.out.println("응답 request : " + requestS);
 					resp.getWriter().write(requestS);
 				} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
+					System.out.println("두포스트에서 모르는단어 없을때 : " + RememberWordList.getKnownWordList());
 					String foodName = foodName(RememberWordList.getKnownWordList());
 					map.put("answer", foodName);
 					map.put("img", ImageReturner.imageReturn(foodName));
