@@ -1,4 +1,4 @@
-const url = "http://192.168.0.113:8080/foodChatBot/chat";
+const url = "http://localhost:8080/foodChatBot/chat";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
@@ -6,7 +6,7 @@ const resolved = document.getElementById("resolved");
 const listBox = document.getElementById("listBox");
 let optionList = [];
 let nope = 0;
-const foodList = [];
+let foodList = [];
 
 function firstMsg() {
   addMessage("anotherMsg", "안녕하세요! 음식 추천을 도와드릴 Dungs라고 해요!");
@@ -57,6 +57,7 @@ function send(e) {
   if (message.value.trim() === "") {
     return;
   }
+  // '난 메뉴가 있어' 처리해주기
   addMessage("myMsg", message.value);
   fetchData({ chat: message.value }, "POST")
     .then((resp) => resp.json())
@@ -68,15 +69,15 @@ function addFood(e) {
   if (e !== null) {
     e.preventDefault();
   }
-
   if (foodList.includes(message.value)) {
     handleOptionSelect(message.value, "food");
   } else {
     addMessage("myMsg", message.value);
     addMessage(
       "anotherMsg",
-      "등록되어있지 않은 음식이에요. 음식 등록부터 해주세요"
+      "등록되어있지 않은 음식이에요."
     );
+    toast("미리보기에 있는 음식으로 입력해주세요", "error");
   }
   message.value = "";
 }
@@ -155,32 +156,45 @@ function handleOptionSelect(option, id) {
       nope = nope + 1;
       addOptionList({ category: "거절" });
       addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
+      toast('"난 메뉴가 있어" 라고 말해보세요', 'info');
     } else {
       addOptionList({ category: "수락" });
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
       addImg(
         "anotherMsg",
         "<a href = 'view/location.html'>음식점 보러가기</a>"
-      );
+        );
+      }
+    fetchData(optionList, "PUT");
+    optionList = [];
+  } else if (option === "음식" || option === "예외" || option === "안돼") {
+    if (option === "음식") {
+      addMessage("anotherMsg", "메뉴에 저장했어요.");
+    } else {
+      addMessage("anotherMsg", "네! 저장했어요.");
+    } 
+    fetchData(optionList, "PUT");
+    optionList = [];
+  } else if (id === "category" && ( option !== "음식" || option !== "예외" )) {
+    addMessage("anotherMsg", "그것은 음식과 매칭이 되나요?");
+    addOptions(["돼", "안돼"], "chat");
+  } else if (option === "돼" || option === "있어") {
+    if (option === "돼") {
+      addFoodOption();
     }
-    fetchData(optionList, "PUT");
-    optionList = [];
-  } else if (id === "category" && option === "음식") {
-    addMessage("anotherMsg", "메뉴에 저장했어요.");
-    fetchData(optionList, "PUT");
-    optionList = [];
-  } else if (id === "category" || option === "있어") {
     addMessage("anotherMsg", "그것은 어떤음식과 매칭이 되나요?");
   } else if (id === "food") {
-    addMessage("anotherMsg", "혹시 또 있을까요?");
+    addMessage("anotherMsg", "매칭되는 음식이 더 있나요?");
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
+    toast("감사합니다! 저장했어요.", 'success');
     fetchData(optionList, "PUT")
       .then((resp) => resp.json())
       .then(handleResponse);
     removeFoodOption();
     optionList = [];
     submit.id = "submit";
+    addMessage("anotherMsg", "이제 물어봐 주세요.");
   }
   if (id !== "food") {
     document.getElementById("optionsDiv").remove();
@@ -244,8 +258,8 @@ function addMessage(senderClass, message) {
 
 function simulateTyping(content, element) {
   let i = 0;
-  const typingInterval = 60; // 타이핑 속도 조절 가능
-  const typingDelay = 500; // 타이핑 효과 시작 전 딜레이
+  const typingInterval = 60;
+  const typingDelay = 500;
 
   setTimeout(function () {
     const typing = setInterval(function () {
@@ -267,7 +281,6 @@ function scrollToBottom() {
 function handleButtonClick(e) {
   if (optionList.length === 0) {
     send(e);
-    addFoodOption();
   } else {
     addFood(e);
   }
@@ -278,6 +291,7 @@ window.addEventListener("load", () => {
   submit.addEventListener("click", handleButtonClick);
 });
 
+// 드롭다운 메뉴 표시하기
 const optionListDiv = document.getElementById("optionListDiv");
 const dropdown = document.querySelector(".dropdown");
 
@@ -290,11 +304,11 @@ function addFoodOption() {
 }
 
 function removeFoodOption() {
-  foodList = [];
   console.log("removeFoodOption() 호출");
   chat.removeEventListener("input", filterOptions);
   chat.removeEventListener("focus", showDropdown);
   chat.removeEventListener("blur", hideDropdown);
+  foodList = [];
 }
 
 dropdown.addEventListener("mousedown", function (e) {
@@ -337,3 +351,24 @@ function updateDropdownOptions(filteredOptions) {
     optionListDiv.appendChild(optionDiv);
   });
 }
+
+function toast(text, icon) {
+      const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+      })
+
+      setTimeout(function() {
+        Toast.fire({
+            icon: icon,
+            title: text,
+        })
+      }, 2000)
+  };
