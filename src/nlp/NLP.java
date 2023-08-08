@@ -73,7 +73,7 @@ public class NLP {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 		String filePath1 = "\\src\\dic.user";
 		String filePath2 = "C:\\Users\\GGG\\eclipse-workspace\\foodChatBot\\src\\dic.user"; // 상대 경로 설정
-		komoran.setUserDic(filePath1);
+		//komoran.setUserDic(filePath1);
 		String userInputText = text;
 		String trimText = userInputText.trim();
 		Set<String> resultSet = new LinkedHashSet<>();

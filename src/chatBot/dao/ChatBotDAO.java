@@ -16,6 +16,7 @@ import util.DBUtil;
 public class ChatBotDAO {
 	public String getFoodName(Connection conn, List<WordCategory> wcList) throws SQLException {
 		List<String> test = RememberWordList.getRefusalList();
+		System.out.println("거절음식리스트 : " + test);
 
 		String testStr = "";
 
@@ -27,6 +28,7 @@ public class ChatBotDAO {
 				}
 			}
 		}
+		System.out.println("dao에서 wcList : " + wcList);
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;

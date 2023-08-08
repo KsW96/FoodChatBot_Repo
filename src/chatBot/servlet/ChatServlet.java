@@ -63,7 +63,7 @@ public class ChatServlet extends HttpServlet {
 
 		System.out.println(body);
 		JSONParser parser = new JSONParser();
-		
+
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
@@ -90,6 +90,7 @@ public class ChatServlet extends HttpServlet {
 			if (category.equals("거절")) {
 				System.out.println("두풋 거절방식");
 				updateS.updateByCount(conn, -1, strWord);
+				RememberWordList.addRefusalList(strWord);
 			} else if (category.equals("수락")) {
 				System.out.println("두풋 수락방식");
 				updateS.updateByCount(conn, 1, strWord);
@@ -97,8 +98,12 @@ public class ChatServlet extends HttpServlet {
 				System.out.println("두풋 음식방식");
 				// 모든 words의 word와 category 가져와서 해당카데고리에
 				// words foodTarget 넣어주기
+				// words 에 넣어주기
+				String categoryT = ReturnTranslate.Translate(category);
+				System.out.println("번역된 카테고리" + categoryT);
 				is.insertFood(conn, strWord);
 				List<WoCate> wordList = is.searchAllWord(conn);
+				System.out.println("wordList : " + wordList);
 				for (WoCate wc : wordList) {
 					System.out.println("현재 words" + wc.getWord());
 					String currentWord = wc.getWord();
@@ -112,7 +117,6 @@ public class ChatServlet extends HttpServlet {
 				String categoryT = ReturnTranslate.Translate(category);
 				System.out.println("번역된 카테고리" + categoryT);
 				// 영어로 번역
-				is.insertFood(conn, strWord);
 				is.insert(conn, strWord, categoryT);
 
 				// 해당 카테고리에 word, food 넣어주기
@@ -161,6 +165,7 @@ public class ChatServlet extends HttpServlet {
 //				insert(requestData);
 				// 하나의 음식명을 반환하는 메소드
 				// 아는단어리스트에 새로 배운 단어 추가해야함
+				RememberWordList.addKnownWordList(strWord);
 				String foodName = foodName(RememberWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
 				resp.setStatus(200);
 				resp.setHeader("Content-Type", "application/json;charset=utf-8");
@@ -180,7 +185,6 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		System.out.println("기억하는 단어들 : " + RememberWordList.getKnownWordList());
 
 		JSONObject answer = new JSONObject();
 		List<String> chat = splitString(req);
@@ -217,8 +221,12 @@ public class ChatServlet extends HttpServlet {
 //	}
 
 	public String foodName(List<String> knownList) {
-		String foodName = rs.recommendFoodName(knownList);
-		return foodName;
+		if (!knownList.isEmpty()) {
+			String foodName = rs.recommendFoodName(knownList);
+			return foodName;
+		} else {
+			return "";
+		}
 	}
 
 	public List<String> splitString(HttpServletRequest req) throws IOException {

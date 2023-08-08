@@ -10,7 +10,6 @@ import chatBot.model.RememberWordList;
 import util.DBUtil;
 
 public class UnKnownService {
-	RememberWordList knownList = new RememberWordList();
 
 	public String unknownWord(List<String> wordList) {
 		ChatBotDAO dao = new ChatBotDAO();
@@ -20,9 +19,12 @@ public class UnKnownService {
 			conn = DBUtil.getConnection();
 
 			List<String> unKnownList = dao.unknownWords(wordList, conn);
+			List<String> knownFoodList = dao.searchAllFood(conn);
 			wordList.removeAll(unKnownList);
-			knownList.setKnownWordList(wordList);
-			System.out.println("ai에게 기억시키는 단어들 : " + knownList.getKnownWordList());
+			wordList.removeAll(knownFoodList);
+			unKnownList.removeAll(knownFoodList);
+			RememberWordList.setKnownWordList(wordList);
+			System.out.println("ai에게 기억시키는 단어들 : " + RememberWordList.getKnownWordList());
 			if (unKnownList.size() > 0) {
 				return unKnownList.get(0);
 			}
