@@ -214,7 +214,7 @@ function addMessage(senderClass, message) {
   if (senderClass === "anotherMsg") {
     nameDiv.innerHTML = "<span class='anotherName'>DUNGS</span>";
   } else if (senderClass === "myMsg") {
-    nameDiv.innerHTML = "<span class='myName'>me</span>";
+    nameDiv.innerHTML = "<span class='myName'>ME</span>";
   }
   msgDiv.innerHTML = '<span class="msg"></span>';
   chatLog.appendChild(nameDiv);
