@@ -10,7 +10,6 @@ import java.util.List;
 import chatBot.model.FoodCount;
 import chatBot.model.RememberWordList;
 import chatBot.model.WordCategory;
-import chatBot.model.jsonModel.WoCate;
 import util.DBUtil;
 
 public class ChatBotDAO {
@@ -68,7 +67,6 @@ public class ChatBotDAO {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		List<String> list = new ArrayList<String>();
-		System.out.println("words리스트 : " + words);
 
 		try {
 			for (String word : words) {
@@ -112,7 +110,7 @@ public class ChatBotDAO {
 		List<String> list = new ArrayList<String>();
 
 		try {
-			stmt = conn.prepareStatement("SELECT * FROM foodchat.exceptions");
+			stmt = conn.prepareStatement("SELECT * FROM exceptions");
 			rs = stmt.executeQuery();
 			while (!rs.next()) {
 				String word = rs.getString("word");
@@ -217,10 +215,10 @@ public class ChatBotDAO {
 		return list;
 	}
 
-	public List<WoCate> searchAllWord(Connection conn) {
+	public List<WordCategory> searchAllWord(Connection conn) {
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		List<WoCate> list = new ArrayList<>();
+		List<WordCategory> list = new ArrayList<>();
 
 		try {
 			stmt = conn.prepareStatement("SELECT * FROM foodchat.words;");
@@ -228,7 +226,7 @@ public class ChatBotDAO {
 			while (rs.next()) {
 				String word = rs.getString("word");
 				String category = rs.getString("category");
-				WoCate wordAndCategory = new WoCate(word, category);
+				WordCategory wordAndCategory = new WordCategory(word, category);
 				list.add(wordAndCategory);
 			}
 		} catch (SQLException e) {

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 import chatBot.dao.ChatBotDAO;
-import chatBot.model.jsonModel.WoCate;
+import chatBot.model.WordCategory;
 
 public class InsertService {
 	ChatBotDAO dao = new ChatBotDAO();
@@ -31,7 +31,7 @@ public class InsertService {
 	}
 
 	// words테이블의 모든 word, category 반환
-	public List<WoCate> searchAllWord(Connection conn) {
+	public List<WordCategory> searchAllWord(Connection conn) {
 		return dao.searchAllWord(conn);
 	}
 }

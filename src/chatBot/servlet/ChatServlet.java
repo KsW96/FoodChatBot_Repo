@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chatBot.dao.ChatBotDAO;
 import chatBot.model.RememberWordList;
-import chatBot.model.jsonModel.WoCate;
+import chatBot.model.WordCategory;
 import chatBot.service.InsertService;
 import chatBot.service.RecommendService;
 import chatBot.service.UnKnownService;
@@ -48,14 +49,16 @@ public class ChatServlet extends HttpServlet {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			JSONObject list = new JSONObject();
-			list.put("list", is.searchAllFood(conn));
-			System.out.println("응답 answer : " + list);
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			List<String> foodList = is.searchAllFood(conn);
+			map.put("list", foodList);
+			JSONObject list = new JSONObject(map);
 			resp.getWriter().write(String.valueOf(list));
 			resp.setStatus(200);
 			resp.setHeader("Content-Type", "application/json;charset=utf-8");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException();
 		} finally {
 			DBUtil.close(conn);
 		}
@@ -71,14 +74,13 @@ public class ChatServlet extends HttpServlet {
 			sb.append(line);
 		}
 		String body = sb.toString();
-		String[] jsonItems = body.split(",");
-
 		System.out.println(body);
 		JSONParser parser = new JSONParser();
 
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
+			 conn.setAutoCommit(false);
 			// 커넥션 생성
 			JSONArray jsonArr = (JSONArray) parser.parse(body);
 			System.out.println(jsonArr.size());
@@ -114,9 +116,9 @@ public class ChatServlet extends HttpServlet {
 				String categoryT = ReturnTranslate.Translate(category);
 				System.out.println("번역된 카테고리" + categoryT);
 				is.insertFood(conn, strWord);
-				List<WoCate> wordList = is.searchAllWord(conn);
+				List<WordCategory> wordList = is.searchAllWord(conn);
 				System.out.println("wordList : " + wordList);
-				for (WoCate wc : wordList) {
+				for (WordCategory wc : wordList) {
 					System.out.println("현재 words" + wc.getWord());
 					String currentWord = wc.getWord();
 					System.out.println("현재 words의 카테고리" + wc.getCategory());
@@ -162,8 +164,8 @@ public class ChatServlet extends HttpServlet {
 						is.insertFood(conn, foodTarget);
 						// 모든 words의 word와 category 가져와서 해당카데고리에
 						// words foodTarget 넣어주기
-						List<WoCate> wordList = is.searchAllWord(conn);
-						for (WoCate wc : wordList) {
+						List<WordCategory> wordList = is.searchAllWord(conn);
+						for (WordCategory wc : wordList) {
 							System.out.println("현재 words" + wc.getWord());
 							String currentWord = wc.getWord();
 							System.out.println("현재 words의 카테고리" + wc.getCategory());
@@ -172,8 +174,6 @@ public class ChatServlet extends HttpServlet {
 						}
 					}
 				}
-				// !태인이형이 주는 양식에 따라 db에 저장하는 형식의 코드를 작성한다.
-				String requestData = null;
 //				insert(requestData);
 				// 하나의 음식명을 반환하는 메소드
 				// 아는단어리스트에 새로 배운 단어 추가해야함
@@ -198,10 +198,12 @@ public class ChatServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		JSONObject answer = new JSONObject();
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		JSONObject answer = null;
 		List<String> chat = splitString(req);
 		if (chat == null) {
-			answer.put("answer", "");
+			map.put("answer", "");
+			answer = new JSONObject(map);
 			resp.getWriter().write(String.valueOf(answer));
 		} else {
 			System.out.println("chat : " + chat);
@@ -216,8 +218,9 @@ public class ChatServlet extends HttpServlet {
 					resp.getWriter().write(requestS);
 				} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
 					String foodName = foodName(RememberWordList.getKnownWordList());
-					answer.put("answer", foodName);
-					answer.put("img", ImageReturner.imageReturn(foodName));
+					map.put("answer", foodName);
+					map.put("img", ImageReturner.imageReturn(foodName));
+					answer = new JSONObject(map);
 					System.out.println("응답 answer : " + answer);
 					resp.getWriter().write(String.valueOf(answer));
 				}
