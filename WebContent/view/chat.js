@@ -6,10 +6,12 @@ const listBox = document.getElementById("listBox");
 let optionList = [];
 let nope = 0;
 const foodList = [];
-const hello = "반갑습니다. 음식 추천을 도와드릴 dungs라고 합니다.";
+const hello = "안녕하세요! 음식 추천을 도와드릴 Dungs라고 해요!";
+const hello2 = "채팅을 통해 음식을 추천해 드릴게요";
 
 function firstMsg() {
   addMessage("anotherMsg", hello);
+  addMessage("anotherMsg", hello2);
 }
 
 function setFoodList() {
@@ -64,7 +66,10 @@ function addFood(e) {
     handleOptionSelect(message.value, "food");
   } else {
     addMessage("myMsg", message.value);
-    addMessage("anotherMsg", "알수없는 음식. 다시말해달라");
+    addMessage(
+      "anotherMsg",
+      "등록되어있지 않은 음식이에요. 음식 등록부터 해주세요"
+    );
   }
   message.value = "";
 }
@@ -73,14 +78,17 @@ function handleResponse(data) {
   // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
     if (data.answer === "") {
-      addMessage("anotherMsg", "미안한데 못알아들었어. 다시 부탁해줄래?");
+      addMessage(
+        "anotherMsg",
+        "이해가 잘 안되네요. 어려운 말이 있나 봐요. 다시 말해줄 수 있을까요?"
+      );
     } else {
       chatBotAnswer();
       addOptionList((obj = { request: data.answer }));
       localStorage.setItem("keyword", data.answer);
-      addMessage("anotherMsg", data.answer + " 어때?");
+      addMessage("anotherMsg", data.answer + " 어때요?");
       addImg("anotherMsg", "<img src = '" + data.img + "' height = '300' />");
-      addOptions(["그래", "아닌듯"], "request");
+      addOptions(["좋아요!", "별로에요.."], "request");
     }
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
@@ -88,7 +96,7 @@ function handleResponse(data) {
     addOptionList((obj = { request: data.request }));
     addMessage(
       "anotherMsg",
-      "모르는 단어가 있다. '" + data.request + "'가 뭐임"
+      "모르는 단어가 포함되어 있었어요... '" + data.request + "' 이(가) 뭐에요?"
     );
     addOptions(
       [
@@ -136,13 +144,13 @@ function handleOptionSelect(option, id) {
     optionList.pop();
   }
   if (id === "request") {
-    if (option === "아닌듯") {
+    if (option === "별로에요..") {
       nope = nope + 1;
       addOptionList({ category: "거절" });
-      addMessage("anotherMsg", "그럼 뭐먹고 싶은데?");
+      addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
     } else {
       addOptionList({ category: "수락" });
-      addMessage("anotherMsg", "근처 음식점을 소개해줄게!");
+      addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
       addImg(
         "anotherMsg",
         "<a href = 'view/location.html'>음식점 보러가기</a>"
@@ -151,14 +159,14 @@ function handleOptionSelect(option, id) {
     fetchData(optionList, "PUT");
     optionList = [];
   } else if (id === "category" && option === "음식") {
-    addMessage("anotherMsg", "오키 알았어.");
-    fetchData(optionList, "PUT").then(handleResponse);
+    addMessage("anotherMsg", "메뉴에 저장했어요.");
+    fetchData(optionList, "PUT");
     optionList = [];
   } else if (id === "category" || option === "있어") {
-    addMessage("anotherMsg", "그것은 어떤음식과 매칭되나?");
+    addMessage("anotherMsg", "그것은 어떤음식과 매칭이 되나요?");
     setFoodList();
   } else if (id === "food") {
-    addMessage("anotherMsg", "또 있음?");
+    addMessage("anotherMsg", "혹시 또 있을까요?");
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
     fetchData(optionList, "PUT").then(handleResponse);
@@ -172,14 +180,14 @@ function handleOptionSelect(option, id) {
 
 function chatBotAnswer() {
   let first = [
-    "내가 추천하는 음식은 이거야!",
-    "이걸 먹어보는 건 어때?",
-    "그냥 이거 무조건 먹어라.",
+    "제가 추천하는 음식은 이거에요!",
+    "이걸 드셔보는 건 어떠세요?",
+    "이건 어떠세요?",
   ];
   let second = [
-    "흠.. 그러면 이건 어때?",
-    "니 말을 알겠어. 이거 먹어",
-    "그냥 이거 무조건 먹어라.",
+    "흠.. 그러면 이건 어떠세요?",
+    "드디어 이해 했어요! 이건 드시는건 어때요?",
+    "그냥 이거 드셔주실래요?",
   ];
   let third = [
     "너 되게 까다롭구나?",
@@ -192,8 +200,10 @@ function chatBotAnswer() {
     addMessage("anotherMsg", first[num]);
   } else if (nope === 1) {
     addMessage("anotherMsg", second[num]);
-  } else {
+  } else if (nope === 1) {
     addMessage("anotherMsg", third[num]);
+  } else {
+    addMessage("anotherMsg", "아 쫌!!!");
   }
 }
 
