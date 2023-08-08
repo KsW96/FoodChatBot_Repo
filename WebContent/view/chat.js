@@ -6,19 +6,16 @@ const listBox = document.getElementById("listBox");
 let optionList = [];
 let nope = 0;
 const foodList = [];
-const hello = "안녕하세요! 음식 추천을 도와드릴 Dungs라고 해요!";
-const hello2 = "채팅을 통해 음식을 추천해 드릴게요";
 
 function firstMsg() {
-  addMessage("anotherMsg", hello);
-  addMessage("anotherMsg", hello2);
+  addMessage("anotherMsg", "안녕하세요! 음식 추천을 도와드릴 Dungs라고 해요!");
+  addMessage("anotherMsg", "채팅을 통해 음식을 추천해 드릴게요");
 }
 
-function setFoodList() {
+function setResolved() {
   fetch("http://localhost:8080/foodChatBot/chat")
     .then((resp) => resp.json())
     .then((data) => {
-      console.log(data.list);
       foodList.push(...data.list);
       foodList.forEach((itemText) => {
         const listItem = document.createElement("div");
@@ -27,7 +24,14 @@ function setFoodList() {
         listBox.appendChild(listItem);
       });
     });
-  console.log(foodList);
+}
+
+function setFoodList() {
+  fetch("http://localhost:8080/foodChatBot/chat")
+    .then((resp) => resp.json())
+    .then((data) => {
+      foodList.push(...data.list);
+    });
 }
 
 function addOptionList(obj) {
@@ -41,7 +45,7 @@ function fetchData(obj, method) {
       "Content-Type": "application/json;charset=utf-8",
     },
     body: JSON.stringify(obj),
-  }).then((resp) => resp.json());
+  });
 }
 
 function send(e) {
@@ -53,7 +57,9 @@ function send(e) {
     return;
   }
   addMessage("myMsg", message.value);
-  fetchData({ chat: message.value }, "POST").then(handleResponse);
+  fetchData({ chat: message.value }, "POST")
+    .then((resp) => resp.json())
+    .then(handleResponse);
   message.value = "";
 }
 
@@ -164,12 +170,14 @@ function handleOptionSelect(option, id) {
     optionList = [];
   } else if (id === "category" || option === "있어") {
     addMessage("anotherMsg", "그것은 어떤음식과 매칭이 되나요?");
-    setFoodList();
   } else if (id === "food") {
     addMessage("anotherMsg", "혹시 또 있을까요?");
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
-    fetchData(optionList, "PUT").then(handleResponse);
+    fetchData(optionList, "PUT")
+      .then((resp) => resp.json())
+      .then(handleResponse);
+    removeFoodOption();
     optionList = [];
     submit.id = "submit";
   }
@@ -186,7 +194,7 @@ function chatBotAnswer() {
   ];
   let second = [
     "흠.. 그러면 이건 어떠세요?",
-    "드디어 이해 했어요! 이건 드시는건 어때요?",
+    "드디어 이해 했어요! 이걸 드시는건 어때요?",
     "그냥 이거 드셔주실래요?",
   ];
   let third = [
@@ -200,7 +208,7 @@ function chatBotAnswer() {
     addMessage("anotherMsg", first[num]);
   } else if (nope === 1) {
     addMessage("anotherMsg", second[num]);
-  } else if (nope === 1) {
+  } else if (nope === 2) {
     addMessage("anotherMsg", third[num]);
   } else {
     addMessage("anotherMsg", "아 쫌!!!");
@@ -258,6 +266,7 @@ function scrollToBottom() {
 function handleButtonClick(e) {
   if (optionList.length === 0) {
     send(e);
+    addFoodOption();
   } else {
     addFood(e);
   }
@@ -267,3 +276,63 @@ window.addEventListener("load", () => {
   firstMsg();
   submit.addEventListener("click", handleButtonClick);
 });
+
+const optionListDiv = document.getElementById("optionListDiv");
+const dropdown = document.querySelector(".dropdown");
+
+function addFoodOption() {
+  setFoodList();
+  console.log("addFoodOption() 호출");
+  chat.addEventListener("input", filterOptions);
+  chat.addEventListener("focus", showDropdown);
+  chat.addEventListener("blur", hideDropdown);
+}
+
+function removeFoodOption() {
+  foodList = [];
+  console.log("removeFoodOption() 호출");
+  chat.removeEventListener("input", filterOptions);
+  chat.removeEventListener("focus", showDropdown);
+  chat.removeEventListener("blur", hideDropdown);
+}
+
+dropdown.addEventListener("mousedown", function (e) {
+  e.preventDefault();
+});
+
+function showDropdown() {
+  dropdown.classList.add("show-dropdown");
+}
+
+function hideDropdown() {
+  dropdown.classList.remove("show-dropdown");
+}
+
+function filterOptions() {
+  const searchTerm = chat.value.toLowerCase();
+  const filteredOptions = foodList.filter((option) =>
+    option.toLowerCase().includes(searchTerm)
+  );
+
+  updateDropdownOptions(filteredOptions);
+}
+
+function updateDropdownOptions(filteredOptions) {
+  // 기존 옵션 목록 삭제
+  while (optionListDiv.firstChild) {
+    optionListDiv.removeChild(optionListDiv.firstChild);
+  }
+
+  // 필터링된 옵션 목록 추가
+  filteredOptions.forEach((optionText) => {
+    const optionDiv = document.createElement("div");
+    optionDiv.textContent = optionText;
+    optionDiv.className = "dropdown-item"; // 추가된 부분: 스타일을 적용하기 위해 클래스 추가
+    optionDiv.addEventListener("click", function () {
+      // 옵션 선택 시 검색창에 값을 넣고 드롭다운 닫기
+      chat.value = optionText;
+      hideDropdown();
+    });
+    optionListDiv.appendChild(optionDiv);
+  });
+}
