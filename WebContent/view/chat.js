@@ -9,8 +9,8 @@ let nope = 0;
 let foodList = [];
 
 function firstMsg() {
-  addMessage("anotherMsg", "안녕하세요! 음식 추천을 도와드릴 Dungs라고 해요!");
-  addMessage("anotherMsg", "채팅을 통해 음식을 추천해 드릴게요");
+  addMessage("anotherMsg", "왔는가 짐은 Dungs라고 한다.");
+  addMessage("anotherMsg", "짐은 모르는ㄱ ㅔ없지");
 }
 
 function setResolved() {

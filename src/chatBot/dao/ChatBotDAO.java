@@ -110,9 +110,9 @@ public class ChatBotDAO {
 		List<String> list = new ArrayList<String>();
 
 		try {
-			stmt = conn.prepareStatement("SELECT * FROM exceptions");
+			stmt = conn.prepareStatement("SELECT * FROM exceptions;");
 			rs = stmt.executeQuery();
-			while (!rs.next()) {
+			while (rs.next()) {
 				String word = rs.getString("word");
 				list.add(word);
 			}
@@ -123,14 +123,15 @@ public class ChatBotDAO {
 		return list;
 	}
 
-	public void insertWord(Connection conn, String word, String category) {
+	public int insertWord(Connection conn, String word, String category) {
 		PreparedStatement stmt = null;
 
 		try {
 			stmt = conn.prepareStatement("insert into words (word, category) values (?,?);");
 			stmt.setString(1, word);
 			stmt.setString(2, category);
-			stmt.executeUpdate();
+			int result = stmt.executeUpdate();
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally
@@ -138,9 +139,10 @@ public class ChatBotDAO {
 		{
 			DBUtil.close(stmt);
 		}
+		return -1;
 	}
 
-	public void insertCategory(Connection conn, String category, String word, String food) {
+	public int insertCategory(Connection conn, String category, String word, String food) {
 		PreparedStatement stmt = null;
 
 		try {
@@ -148,7 +150,8 @@ public class ChatBotDAO {
 //			stmt.setString(1, category);
 			stmt.setString(1, word);
 			stmt.setString(2, food);
-			stmt.executeUpdate();
+			int result = stmt.executeUpdate();
+			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally
@@ -156,6 +159,7 @@ public class ChatBotDAO {
 		{
 			DBUtil.close(stmt);
 		}
+		return -1;
 	}
 
 	public void updateByCount(Connection conn,int count, String category, String word, String food) {
