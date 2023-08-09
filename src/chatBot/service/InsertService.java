@@ -9,16 +9,16 @@ import chatBot.model.WordCategory;
 public class InsertService {
 	ChatBotDAO dao = new ChatBotDAO();
 
-	public void insert(Connection conn, String word, String category) {
-		dao.insertWord(conn, word, category);
+	public int insert(Connection conn, String word, String category) {
+		return dao.insertWord(conn, word, category);
 	}
 
-	public void insertCategory(Connection conn, String category, String word, String food) {
-		dao.insertCategory(conn, category, word, food);
+	public int insertCategory(Connection conn, String category, String word, String food) {
+		return dao.insertCategory(conn, category, word, food);
 	}
 
-	public void insertFood(Connection conn, String food) {
-		dao.insertFood(conn, food);
+	public int insertFood(Connection conn, String food) {
+		return dao.insertFood(conn, food);
 	}
 
 	public boolean searchFood(Connection conn, String food) {
