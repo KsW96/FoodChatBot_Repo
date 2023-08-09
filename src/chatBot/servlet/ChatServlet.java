@@ -171,6 +171,10 @@ public class ChatServlet extends HttpServlet {
 							String currentCategory = wc.getCategory();
 							is.insertCategory(conn, currentCategory, currentWord, foodTarget);
 						}
+					} else {
+						// 이미 있는 단어니까
+						// 해당 카테고리에 단어 ,foodTarget 찾아서 카운트 + 10 해주기
+						is.updateMatched(conn, categoryT, strWord, foodTarget);
 					}
 				}
 			}
