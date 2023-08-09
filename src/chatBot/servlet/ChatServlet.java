@@ -80,7 +80,7 @@ public class ChatServlet extends HttpServlet {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-//			 conn.setAutoCommit(false);
+			conn.setAutoCommit(false);
 			JSONArray jsonArr = (JSONArray) parser.parse(body);
 			System.out.println(jsonArr.size());
 			// word + category words에 넣어주기
@@ -186,11 +186,26 @@ public class ChatServlet extends HttpServlet {
 				resp.getWriter().write(answer);
 			}
 		} catch (ParseException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(conn);
+			try {
+				conn.setAutoCommit(true);
+				DBUtil.close(conn);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
