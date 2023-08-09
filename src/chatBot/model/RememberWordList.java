@@ -4,14 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RememberWordList {
-	private static List<String> knownWordList = null;
-	private static List<String>  RefusalList = null;
+	private static List<String> knownWordList = new ArrayList<String>();
+	private static List<String>  RefusalList = new ArrayList<String>();
 
-	static {
-		knownWordList = new ArrayList<String>();
-		RefusalList = new ArrayList<String>();
-	}
-	
 	public static List<String> getKnownWordList() {
 		return knownWordList;
 	}

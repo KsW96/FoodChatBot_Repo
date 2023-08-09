@@ -90,8 +90,7 @@ public class ChatServlet extends HttpServlet {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			 conn.setAutoCommit(false);
-			// 커넥션 생성
+			conn.setAutoCommit(false);
 			JSONArray jsonArr = (JSONArray) parser.parse(body);
 			System.out.println(jsonArr.size());
 			// word + category words에 넣어주기
@@ -184,24 +183,28 @@ public class ChatServlet extends HttpServlet {
 						}
 					}
 				}
-//				insert(requestData);
-				// 하나의 음식명을 반환하는 메소드
-				// 아는단어리스트에 새로 배운 단어 추가해야함
-				RememberWordList.addKnownWordList(strWord);
-				System.out.println("두겟에서 모르는단어 없을때 : " + RememberWordList.getKnownWordList());
-				String foodName = foodName(RememberWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				String answer = "{\"answer\": \"" + foodName + "\"}";
-				System.out.println("응답 answer : " + answer);
-				resp.getWriter().write(answer);
 			}
 		} catch (ParseException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		} finally {
-			DBUtil.close(conn);
+			try {
+				conn.setAutoCommit(true);
+				DBUtil.close(conn);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

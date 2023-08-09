@@ -9,8 +9,8 @@ let nope = 0;
 let foodList = [];
 
 function firstMsg() {
-  addMessage("anotherMsg", "안녕하세요! 음식 추천을 도와드릴 Dungs라고 해요!");
-  addMessage("anotherMsg", "채팅을 통해 음식을 추천해 드릴게요");
+  addMessage("anotherMsg", "왔는가 짐은 Dungs라고 한다.");
+  addMessage("anotherMsg", "짐은 모르는ㄱ ㅔ없지");
 }
 
 function setResolved() {
@@ -73,10 +73,7 @@ function addFood(e) {
     handleOptionSelect(message.value, "food");
   } else {
     addMessage("myMsg", message.value);
-    addMessage(
-      "anotherMsg",
-      "등록되어있지 않은 음식이에요."
-    );
+    addMessage("anotherMsg", "등록되어있지 않은 음식이에요.");
     toast("미리보기에 있는 음식으로 입력해주세요", "error");
   }
   message.value = "";
@@ -95,7 +92,12 @@ function handleResponse(data) {
       addOptionList((obj = { request: data.answer }));
       localStorage.setItem("keyword", data.answer);
       addMessage("anotherMsg", data.answer + " 어때요?");
-      addImg("anotherMsg", "<img src = '" + data.img + "' height = '300' />");
+      addImg(
+        "anotherMsg",
+        "<img src = '" +
+          data.img +
+          "' referrerpolicy='no-referrer' height = '300' />"
+      );
       addOptions(["좋아요!", "별로에요.."], "request");
     }
   }
@@ -106,27 +108,15 @@ function handleResponse(data) {
       "anotherMsg",
       "모르는 단어가 포함되어 있었어요... '" + data.request + "' 이(가) 뭐에요?"
     );
-    addOptions(
-      [
-        "사람",
-        "날씨",
-        "장소",
-        "재료",
-        "행동",
-        "맛",
-        "음식",
-        "예외",
-        "예산",
-        "양",
-      ],
-      "category"
-    );
+    addOptions(["사람", "날씨", "장소", "행동", "예산", "양"], "category");
+    addOptions(["음식", "재료", "맛"], "category");
   }
 }
 
 function addOptions(options, id) {
   setTimeout(() => {
     message.disabled = true;
+    submit.disabled = true;
     const optionsElement = document.createElement("div");
     optionsElement.id = "optionsDiv";
     options.forEach((option) => {
@@ -142,6 +132,7 @@ function addOptions(options, id) {
 
 function handleOptionSelect(option, id) {
   message.disabled = false;
+  submit.disabled = false;
   const obj = {
     [id]: option,
   };
@@ -156,26 +147,27 @@ function handleOptionSelect(option, id) {
       nope = nope + 1;
       addOptionList({ category: "거절" });
       addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
-      toast('"난 메뉴가 있어" 라고 말해보세요', 'info');
+      toast('"난 메뉴가 있어" 라고 말해보세요', "info");
     } else {
       addOptionList({ category: "수락" });
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
       addImg(
         "anotherMsg",
         "<a href = 'view/location.html'>음식점 보러가기</a>"
-        );
-      }
+      );
+    }
     fetchData(optionList, "PUT");
     optionList = [];
-  } else if (option === "음식" || option === "예외" || option === "안돼") {
+  } else if (option === "음식" || option === "안돼") {
     if (option === "음식") {
       addMessage("anotherMsg", "메뉴에 저장했어요.");
     } else {
       addMessage("anotherMsg", "네! 저장했어요.");
-    } 
+    }
     fetchData(optionList, "PUT");
     optionList = [];
-  } else if (id === "category" && ( option !== "음식" || option !== "예외" )) {
+	addMessage("anotherMsg", "이제 물어봐 주세요.");
+  } else if (id === "category" && option !== "음식") {
     addMessage("anotherMsg", "그것은 음식과 매칭이 되나요?");
     addOptions(["돼", "안돼"], "chat");
   } else if (option === "돼" || option === "있어") {
@@ -187,7 +179,7 @@ function handleOptionSelect(option, id) {
     addMessage("anotherMsg", "매칭되는 음식이 더 있나요?");
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
-    toast("감사합니다! 저장했어요.", 'success');
+    toast("감사합니다! 저장했어요.", "success");
     fetchData(optionList, "PUT")
       .then((resp) => resp.json())
       .then(handleResponse);
@@ -197,6 +189,9 @@ function handleOptionSelect(option, id) {
     addMessage("anotherMsg", "이제 물어봐 주세요.");
   }
   if (id !== "food") {
+    document.getElementById("optionsDiv").remove();
+  }
+  if (id === "category") {
     document.getElementById("optionsDiv").remove();
   }
 }
@@ -299,14 +294,14 @@ function addFoodOption() {
   setFoodList();
   console.log("addFoodOption() 호출");
   chat.addEventListener("input", filterOptions);
-  chat.addEventListener("focus", showDropdown);
+  chat.addEventListener("focus", focusDropdown);
   chat.addEventListener("blur", hideDropdown);
 }
 
 function removeFoodOption() {
   console.log("removeFoodOption() 호출");
   chat.removeEventListener("input", filterOptions);
-  chat.removeEventListener("focus", showDropdown);
+  chat.removeEventListener("focus", focusDropdown);
   chat.removeEventListener("blur", hideDropdown);
   foodList = [];
 }
@@ -323,12 +318,22 @@ function hideDropdown() {
   dropdown.classList.remove("show-dropdown");
 }
 
+function focusDropdown() {
+    if (chat.value.trim() === "") {
+      const searchTerm = chat.value.toLowerCase();
+      const filteredOptions = foodList.filter((option) =>
+        option.toLowerCase().includes(searchTerm)
+      );
+      updateDropdownOptions(filteredOptions);
+    }
+    showDropdown();
+  }
+
 function filterOptions() {
   const searchTerm = chat.value.toLowerCase();
   const filteredOptions = foodList.filter((option) =>
     option.toLowerCase().includes(searchTerm)
   );
-
   updateDropdownOptions(filteredOptions);
 }
 
@@ -353,22 +358,22 @@ function updateDropdownOptions(filteredOptions) {
 }
 
 function toast(text, icon) {
-      const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-              toast.addEventListener('mouseenter', Swal.stopTimer)
-              toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-      })
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
 
-      setTimeout(function() {
-        Toast.fire({
-            icon: icon,
-            title: text,
-        })
-      }, 2000)
-  };
+  setTimeout(function () {
+    Toast.fire({
+      icon: icon,
+      title: text,
+    });
+  }, 2000);
+}
