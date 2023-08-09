@@ -157,31 +157,6 @@ button {
   padding: 20px;
 }
 
-.list-box {
-  width: 140px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.list-item {
-  text-align: center;
-  padding: 8px;
-  margin: 5px 0;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background-color 0.3s, border-color 0.3s;
-}
-
-.list-item:hover {
-  background-color: #f0f0f0;
-  border-color: #bbb;
-}
-
 .dropdown {
   display: none;
   position: fixed;
@@ -194,6 +169,7 @@ button {
 }
 
 .show-dropdown {
+  width: 200px;
   display: block;
   animation: slide-up 0.3s ease-in-out;
 }
