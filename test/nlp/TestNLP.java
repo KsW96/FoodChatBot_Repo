@@ -14,6 +14,7 @@ import kr.co.shineware.nlp.komoran.core.Komoran;
 import kr.co.shineware.nlp.komoran.model.Token;
 
 public class TestNLP {
+	private static Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 
 	public TestNLP() {
 	}
@@ -27,40 +28,21 @@ public class TestNLP {
 		return matcher.matches();
 	}
 
-	// 연결어미만 잘라내기 (미사용)
-	private static boolean regexJ(String pos) {
-		String pattern = "JKS|JKC|JKG|JKO|JKB|JKV|JKQ|JX|JC|EP|EF|EC|ETN|ETM";
-		Pattern compiledPattern = Pattern.compile(pattern);
-		Matcher matcher = compiledPattern.matcher(pos);
+	// 부정문을 먼저 확인하고 , 리스트를 반환, 사전 처리
+	@Test
+	public void negativeNNP() {
+		komoran.setUserDic("negative.dic");
+		String userInputText = "안돼요 싫어요 왜이러세요";
+		String trimText = userInputText.trim();
 
-		return matcher.matches();
-	}
+		List<Token> tokens = komoran.analyze(trimText).getTokenList();
+		for (Token token : tokens) {
 
-	// (미사용)
-	private static List<String> 어미붙이기(List<Token> list) {
-		List<String> mergedList = new ArrayList<>();
-		List<String> morphList = new ArrayList<>();
-		String empty = "";
-		int mergedCount = 0;
-
-		// regexJ가 트루일때만 바로 앞에 녀석과 합치기
-		for (Token token : list) {
-			morphList.add(token.getMorph());
-
-			if (regexJ(token.getPos())) {
-				mergedCount--;
-				String target = mergedList.get(mergedCount);
-				String result = target + token.getMorph();
-				mergedList.remove(mergedCount);
-				mergedList.add(result);
-				mergedCount++;
-			} else {
-				mergedList.add(token.getMorph());
-				mergedCount++;
+			if (regexN(token.getPos())) {
+				System.out.println("문자열 : " + token.getMorph());
+				System.out.println("품사 : " + token.getPos());
 			}
 		}
-
-		return mergedList;
 	}
 
 //	현재의 형태로는 한계가 존재
@@ -73,7 +55,7 @@ public class TestNLP {
 
 	@Test
 	public void doNLP() {
-		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
+
 		komoran.setUserDic("user.dic");
 
 		String userInputText = "차갑고 시원한 레시피 공간입니다.";

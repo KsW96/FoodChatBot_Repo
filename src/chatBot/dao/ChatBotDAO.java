@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.cj.xdevapi.Result;
+
 import chatBot.model.FoodCount;
 import chatBot.model.RememberWordList;
 import chatBot.model.WordCategory;
@@ -162,11 +164,12 @@ public class ChatBotDAO {
 		return -1;
 	}
 
-	public void updateByCount(Connection conn,int count, String category, String word, String food) {
+	public void updateByCount(Connection conn, int count, String category, String word, String food) {
 		PreparedStatement stmt = null;
 
 		try {
-			stmt = conn.prepareStatement("UPDATE "+category+" SET `count` = (`count` + ?) WHERE (`word` = ?) and (`food` = ?);");
+			stmt = conn.prepareStatement(
+					"UPDATE " + category + " SET `count` = (`count` + ?) WHERE (`word` = ?) and (`food` = ?);");
 			stmt.setInt(1, count);
 			stmt.setString(2, word);
 			stmt.setString(3, food);
@@ -257,5 +260,38 @@ public class ChatBotDAO {
 			DBUtil.close(stmt);
 		}
 		return -1;
+	}
+
+	public List<String> searchNegativeWord(List<String> list) {
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<String> result = new ArrayList<>();
+
+		try {
+			conn = DBUtil.getConnection();
+			for (String s : list) {
+
+				stmt = conn.prepareStatement("Select * from negative where word = ?");
+				stmt.setString(1, s);
+				rs = stmt.executeQuery();
+
+				if (rs.next()) {
+					result.clear();
+				} else {
+					result.add(s);
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally
+
+		{
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+			DBUtil.close(conn);
+		}
+		return result;
 	}
 }
