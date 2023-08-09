@@ -80,7 +80,7 @@ public class ChatServlet extends HttpServlet {
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			 conn.setAutoCommit(false);
+			// conn.setAutoCommit(false);
 			// 커넥션 생성
 			JSONArray jsonArr = (JSONArray) parser.parse(body);
 			System.out.println(jsonArr.size());
