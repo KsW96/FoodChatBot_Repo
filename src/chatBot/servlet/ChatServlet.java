@@ -173,17 +173,6 @@ public class ChatServlet extends HttpServlet {
 						}
 					}
 				}
-//				insert(requestData);
-				// 하나의 음식명을 반환하는 메소드
-				// 아는단어리스트에 새로 배운 단어 추가해야함
-				RememberWordList.addKnownWordList(strWord);
-				System.out.println("두겟에서 모르는단어 없을때 : " + RememberWordList.getKnownWordList());
-				String foodName = foodName(RememberWordList.getKnownWordList()); // !foodName 미완성임. 성우행님이 쿼리문 완성하면 변경됨
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json;charset=utf-8");
-				String answer = "{\"answer\": \"" + foodName + "\"}";
-				System.out.println("응답 answer : " + answer);
-				resp.getWriter().write(answer);
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
