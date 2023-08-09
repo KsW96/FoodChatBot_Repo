@@ -293,23 +293,14 @@ function addFoodOption() {
   setFoodList();
   console.log("addFoodOption() 호출");
   chat.addEventListener("input", filterOptions);
-  chat.addEventListener("focus", function () {
-    if (chat.value.trim() === "") {
-      const searchTerm = chat.value.toLowerCase();
-      const filteredOptions = foodList.filter((option) =>
-        option.toLowerCase().includes(searchTerm)
-      );
-      updateDropdownOptions(filteredOptions);
-    }
-    showDropdown();
-  });
+  chat.addEventListener("focus", focusDropdown);
   chat.addEventListener("blur", hideDropdown);
 }
 
 function removeFoodOption() {
   console.log("removeFoodOption() 호출");
   chat.removeEventListener("input", filterOptions);
-  chat.removeEventListener("focus", showDropdown);
+  chat.removeEventListener("focus", focusDropdown);
   chat.removeEventListener("blur", hideDropdown);
   foodList = [];
 }
@@ -325,6 +316,17 @@ function showDropdown() {
 function hideDropdown() {
   dropdown.classList.remove("show-dropdown");
 }
+
+function focusDropdown() {
+    if (chat.value.trim() === "") {
+      const searchTerm = chat.value.toLowerCase();
+      const filteredOptions = foodList.filter((option) =>
+        option.toLowerCase().includes(searchTerm)
+      );
+      updateDropdownOptions(filteredOptions);
+    }
+    showDropdown();
+  }
 
 function filterOptions() {
   const searchTerm = chat.value.toLowerCase();
@@ -357,7 +359,7 @@ function updateDropdownOptions(filteredOptions) {
 function toast(text, icon) {
   const Toast = Swal.mixin({
     toast: true,
-    position: "top-end",
+    position: "top",
     showConfirmButton: false,
     timer: 3000,
     timerProgressBar: true,
