@@ -166,6 +166,7 @@ function handleOptionSelect(option, id) {
     }
     fetchData(optionList, "PUT");
     optionList = [];
+	addMessage("anotherMsg", "이제 물어봐 주세요.");
   } else if (id === "category" && option !== "음식") {
     addMessage("anotherMsg", "그것은 음식과 매칭이 되나요?");
     addOptions(["돼", "안돼"], "chat");
