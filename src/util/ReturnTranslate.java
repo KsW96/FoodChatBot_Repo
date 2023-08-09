@@ -3,7 +3,7 @@ package util;
 public class ReturnTranslate {
 	public static String Translate(String target) {
 		if (target.equals("날씨")) {
-			return "wether";
+			return "weather";
 		} else if (target.equals("장소")) {
 			return "place";
 		} else if (target.equals("재료")) {
@@ -25,7 +25,7 @@ public class ReturnTranslate {
 		}
 
 		return "잘못된거임";
-//	wether 날씨
+//	weather 날씨
 //	place 장소
 //	ingredient 재료
 //	person 사람
