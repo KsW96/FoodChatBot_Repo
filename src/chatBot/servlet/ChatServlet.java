@@ -2,6 +2,7 @@ package chatBot.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,6 +45,14 @@ public class ChatServlet extends HttpServlet {
 	ObjectMapper mapper = new ObjectMapper();
 	ChatBotDAO dao = new ChatBotDAO();
 	UpdateService updateS = new UpdateService();
+
+	
+//  배포시 절대경로 찾기위한 메소드 인데 먼가 잘 안된다... 나중에 참고 가능성이 있으니 남겨둠
+//	public static String filepath;
+//	@Override
+//	public void init(ServletConfig config) throws ServletException {
+//		filepath = config.getServletContext().getRealPath("negative.dic");
+//	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
