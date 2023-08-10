@@ -44,6 +44,13 @@ public class ChatServlet extends HttpServlet {
 	ChatBotDAO dao = new ChatBotDAO();
 	UpdateService updateS = new UpdateService();
 
+//  배포시 절대경로 찾기위한 메소드 인데 먼가 잘 안된다... 나중에 참고 가능성이 있으니 남겨둠
+//	public static String filepath;
+//	@Override
+//	public void init(ServletConfig config) throws ServletException {
+//		filepath = config.getServletContext().getRealPath("negative.dic");
+//	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		processDoGoet(resp);

@@ -1,16 +1,17 @@
-const url = "http://localhost:8080/foodChatBot/chat";
+const url = "http://192.168.0.109:8080/foodChatBot/chat";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
 const resolved = document.getElementById("resolved");
 const listBox = document.getElementById("listBox");
+
 let optionList = [];
 let nope = 0;
 let foodList = [];
 
 function firstMsg() {
-  addMessage("anotherMsg", "왔는가 짐은 Dungs라고 한다.");
-  addMessage("anotherMsg", "짐은 모르는ㄱ ㅔ없지");
+  addMessage("anotherMsg", "안녕하세요. 음식 추천을 도와드릴 Dungs 입니다!");
+  addMessage("anotherMsg", "아무 말이나 적어보세요!");
 }
 
 function setResolved() {
@@ -57,7 +58,7 @@ function send(e) {
   if (message.value.trim() === "") {
     return;
   }
-  // '난 메뉴가 있어' 처리해주기
+  // '난 메뉴가 있어' 처리
   addMessage("myMsg", message.value);
   fetchData({ chat: message.value }, "POST")
     .then((resp) => resp.json())
@@ -73,7 +74,7 @@ function addFood(e) {
     handleOptionSelect(message.value, "food");
   } else {
     addMessage("myMsg", message.value);
-    addMessage("anotherMsg", "등록되어있지 않은 음식이에요.");
+    addMessage("anotherMsg", "다른음식은 어떤게 있어요?");
     toast("미리보기에 있는 음식으로 입력해주세요", "error");
   }
   message.value = "";
@@ -147,7 +148,7 @@ function handleOptionSelect(option, id) {
       nope = nope + 1;
       addOptionList({ category: "거절" });
       addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
-      toast('"난 메뉴가 있어" 라고 말해보세요', "info");
+      toast("선호하는 맛을 이야기 해보세요!", "info");
     } else {
       addOptionList({ category: "수락" });
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
@@ -166,6 +167,7 @@ function handleOptionSelect(option, id) {
     }
     fetchData(optionList, "PUT");
     optionList = [];
+    addMessage("anotherMsg", "이제 물어봐 주세요.");
   } else if (id === "category" && option !== "음식") {
     addMessage("anotherMsg", "그것은 음식과 매칭이 되나요?");
     addOptions(["돼", "안돼"], "chat");
@@ -179,9 +181,7 @@ function handleOptionSelect(option, id) {
     addOptions(["있어", "없어"], "chat");
   } else if (option === "없어") {
     toast("감사합니다! 저장했어요.", "success");
-    fetchData(optionList, "PUT")
-      .then((resp) => resp.json())
-      .then(handleResponse);
+    fetchData(optionList, "PUT");
     removeFoodOption();
     optionList = [];
     submit.id = "submit";
@@ -282,6 +282,9 @@ function handleButtonClick(e) {
 
 window.addEventListener("load", () => {
   firstMsg();
+  document.getElementById("map").addEventListener("click", () => {
+	window.location.href = "view/map.html"
+  });
   submit.addEventListener("click", handleButtonClick);
 });
 
@@ -318,15 +321,15 @@ function hideDropdown() {
 }
 
 function focusDropdown() {
-    if (chat.value.trim() === "") {
-      const searchTerm = chat.value.toLowerCase();
-      const filteredOptions = foodList.filter((option) =>
-        option.toLowerCase().includes(searchTerm)
-      );
-      updateDropdownOptions(filteredOptions);
-    }
-    showDropdown();
+  if (chat.value.trim() === "") {
+    const searchTerm = chat.value.toLowerCase();
+    const filteredOptions = foodList.filter((option) =>
+      option.toLowerCase().includes(searchTerm)
+    );
+    updateDropdownOptions(filteredOptions);
   }
+  showDropdown();
+}
 
 function filterOptions() {
   const searchTerm = chat.value.toLowerCase();

@@ -34,4 +34,8 @@ public class InsertService {
 	public List<WordCategory> searchAllWord(Connection conn) {
 		return dao.searchAllWord(conn);
 	}
+
+	public int updateMatched(Connection conn, String category, String word, String food) {
+		return dao.updateMatched(conn, category, word, food);
+	}
 }

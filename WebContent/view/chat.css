@@ -79,9 +79,10 @@ button {
 }
 
 #chat {
-  width: 85%;
+  width: 82%;
   height: calc(100% - 1px);
   border: none;
+  padding-left: 15px;
   padding-bottom: 0;
 }
 
