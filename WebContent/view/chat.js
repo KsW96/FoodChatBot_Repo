@@ -1,4 +1,4 @@
-const url = "http://192.168.0.113:8080/foodChatBot/chat";
+const url = "http://192.168.0.113:8080/foodChatBot/";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
@@ -6,26 +6,22 @@ const resolved = document.getElementById("resolved");
 const listBox = document.getElementById("listBox");
 
 let optionList = [];
-let nope = 0;
 let foodList = [];
+let nope = 0;
 
 function firstMsg() {
   addMessage("anotherMsg", "안녕하세요. 음식 추천을 도와드릴 Dungs 입니다!");
   addMessage("anotherMsg", "아무 말이나 적어보세요!");
 }
 
-function setResolved() {
-  fetch(url)
-    .then((resp) => resp.json())
-    .then((data) => {
-      foodList.push(...data.list);
-      foodList.forEach((itemText) => {
-        const listItem = document.createElement("div");
-        listItem.className = "list-item";
-        listItem.textContent = itemText;
-        listBox.appendChild(listItem);
-      });
-    });
+function fetchData(obj, method, seturl = url + "chat") {
+  return fetch(seturl, {
+    method: method,
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+    },
+    body: JSON.stringify(obj),
+  });
 }
 
 function setFoodList() {
@@ -44,16 +40,6 @@ function addOptionList(key, value) {
   console.log(optionList);
 }
 
-function fetchData(obj, method) {
-  return fetch(url, {
-    method: method,
-    headers: {
-      "Content-Type": "application/json;charset=utf-8",
-    },
-    body: JSON.stringify(obj),
-  });
-}
-
 function send(e) {
   if (e !== null) {
     e.preventDefault();
@@ -62,7 +48,7 @@ function send(e) {
   if (message.value.trim() === "") {
     return;
   }
-  // '난 메뉴가 있어' 처리
+
   addMessage("myMsg", message.value);
   fetchData({ chat: message.value }, "POST")
     .then((resp) => resp.json())
@@ -83,7 +69,7 @@ function handleResponse(data) {
       addOptionList("request", data.answer);
       localStorage.setItem("keyword", data.answer);
       addMessage("anotherMsg", data.answer + " 어때요?");
-      addImg(
+      addMsg(
         "anotherMsg",
         "<img src = '" +
           data.img +
@@ -102,6 +88,17 @@ function handleResponse(data) {
         "' 이(가) 음식인가요?"
     );
     addOptions(["응", "아니"], "isFood");
+  }
+  // 사용자가 음식만 입력했을 때
+  if (data.ask !== undefined) {
+    addOptionList("ask", data.ask);
+    localStorage.setItem("keyword", data.ask);
+    addMessage(
+      "anotherMsg",
+      "'" + data.ask + "' 과 어울리는 음식을 소개해 드릴까요?"
+    );
+    addMsg("anotherMsg", "해당 음식의 근처 맛집을 보여드릴까요?");
+    addOptions(["어울리는 음식", "근처 맛집"], "ask");
   }
 }
 
@@ -136,13 +133,25 @@ function handleOptionSelect(option, id) {
     } else if (option === "좋아!") {
       addOptionList("category", "수락");
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
-      addImg(
+      addMsg(
         "anotherMsg",
         "<a href = 'view/location.html'>음식점 보러가기</a>"
       );
     }
     fetchData(optionList, "PUT");
     optionList = [];
+  } else if (id === "ask") {
+    if (option === "어울리는 음식") {
+      fetchData(optionList, "POST", url + "ask")
+        .then((resp) => resp.json())
+        .then(handleResponse);
+    } else if (option === "근처 맛집") {
+      addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
+      addMsg(
+        "anotherMsg",
+        "<a href = 'view/location.html'>음식점 보러가기</a>"
+      );
+    }
   } else if (id === "isFood") {
     if (option === "응") {
       addOptionList("category", "음식");
@@ -169,13 +178,9 @@ function handleOptionSelect(option, id) {
 }
 
 function userAnswer() {
-  let yes = [
-    "그래", "응", "이해", "알", "오케", "맞아", "좋"
-  ];
-  let no = [
-    "아니", "거절", "별로", "싫어", "안", ""
-  ];
-  return false;
+  let yes = ["그래", "응", "이해", "알", "오케", "맞아", "좋"];
+  let no = ["아니", "거절", "별로", "싫어", "안"];
+  return;
 }
 
 function chatBotAnswer() {
@@ -207,7 +212,7 @@ function chatBotAnswer() {
   }
 }
 
-function addImg(senderClass, message) {
+function addMsg(senderClass, message) {
   setTimeout(() => {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add(senderClass);
