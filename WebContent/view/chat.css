@@ -134,7 +134,7 @@ button {
   justify-content: space-around;
 }
 
-#login {
+#map {
   width: 154px;
   height: 50px;
   flex-shrink: 0;
@@ -144,7 +144,7 @@ button {
   background: #ffe45e;
 }
 
-#login:hover {
+#map:hover {
   background-color: #cfbe67;
   transition: 0.7s;
 }
