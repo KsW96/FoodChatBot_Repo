@@ -1,4 +1,4 @@
-const url = "http://localhost:8080/foodChatBot/chat";
+const url = "http://localhost:8080/foodChatBot/";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
@@ -97,8 +97,7 @@ function handleResponse(data) {
       "anotherMsg",
       "'" + data.ask + "' 과 어울리는 음식을 소개해 드릴까요?"
     );
-    addMsg("anotherMsg", "해당 음식의 근처 맛집을 보여드릴까요?");
-    addOptions(["어울리는 음식", "근처 맛집"], "ask");
+    addOptions(["소개해줘", data.ask + " 맛집 보러가기"], "ask");
   }
 }
 
@@ -129,7 +128,6 @@ function handleOptionSelect(option, id) {
       nope = nope + 1;
       addOptionList("category", "거절");
       addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
-      toast("선호하는 맛을 이야기 해보세요!", "info");
     } else if (option === "좋아!") {
       addOptionList("category", "수락");
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
@@ -141,11 +139,11 @@ function handleOptionSelect(option, id) {
     fetchData(optionList, "PUT");
     optionList = [];
   } else if (id === "ask") {
-    if (option === "어울리는 음식") {
+    if (option === "소개해줘") {
       fetchData(optionList, "POST", url + "ask")
         .then((resp) => resp.json())
         .then(handleResponse);
-    } else if (option === "근처 맛집") {
+    } else {
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
       addMsg(
         "anotherMsg",
@@ -203,10 +201,13 @@ function chatBotAnswer() {
 
   if (nope === 0) {
     addMessage("anotherMsg", first[num]);
+    toast("선호하는 맛을 이야기 해보세요!", "info");
   } else if (nope === 1) {
     addMessage("anotherMsg", second[num]);
+    toast("더 자세히 이야기 해보세요!", "info");
   } else if (nope === 2) {
     addMessage("anotherMsg", third[num]);
+    toast("이제 고를때가 된 것 같은데요!", "info");
   } else {
     addMessage("anotherMsg", "아 쫌!!!");
   }
