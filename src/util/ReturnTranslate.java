@@ -3,7 +3,7 @@ package util;
 public class ReturnTranslate {
 	public static String Translate(String target) {
 		if (target.equals("단어")) {
-			return "word";
+			return "associate";
 		} else if (target.equals("음식")) {
 			return "food";
 		} else if (target.equals("예외")) {

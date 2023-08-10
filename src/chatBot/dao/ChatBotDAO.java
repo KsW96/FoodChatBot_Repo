@@ -19,39 +19,34 @@ public class ChatBotDAO {
 		String exclude = "";
 		if (excludeList.size() >= 1) {
 			for (int i = 0; i < excludeList.size(); i++) {
-				exclude += "AND food_id != ('+"+excludeList.get(i)+"+')";
+				exclude += "AND food != ('" + excludeList.get(i) + "')";
 			}
 		}
 		System.out.println("dao에서 wcList : " + wcList);
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
-		
+
 		String words = "";
-		String word = "'"+wcList.get(0).getWord()+"'";
-		words += word;
+		String word = wcList.get(0).getWord();
+		words += "'"+word+"'";
 		for (int i = 1; i < wcList.size(); i++) {
 			word = wcList.get(i).getWord();
-			words += ", '"+word+"'";
+			words += ", '" + word + "'";
 		}
 		try {
 
-			String li = "SELECT food_id, MAX(total_count) AS max_total_count\r\n" + 
-					"FROM (\r\n" + 
-					"    SELECT food_id, SUM(count) AS total_count\r\n" + 
-					"    FROM associate\r\n" + 
-					"    WHERE words_id IN ("+ words +") " + exclude + 
-					"    GROUP BY food_id\r\n" + 
-					") AS grouped_data\r\n" + 
-					"GROUP BY food_id\r\n" + 
-					"ORDER BY max_total_count DESC\r\n" + 
-					"LIMIT 1;";
+			String li = "SELECT food, MAX(total_count) AS max_total_count\r\n" + "FROM (\r\n"
+					+ "    SELECT food, SUM(count) AS total_count\r\n" + "    FROM associate\r\n"
+					+ "    WHERE word IN (" + words + ") " + exclude + "    GROUP BY food\r\n"
+					+ ") AS grouped_data\r\n" + "GROUP BY food\r\n" + "ORDER BY max_total_count DESC\r\n"
+					+ "LIMIT 1;";
 
 			System.out.println("dao에서 쿼리문 : " + li);
 			stmt = conn.prepareStatement(li);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				String food = rs.getString("food_id");
+				String food = rs.getString("food");
 				return food;
 			}
 		} finally {
