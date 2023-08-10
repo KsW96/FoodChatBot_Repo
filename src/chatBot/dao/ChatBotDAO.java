@@ -15,7 +15,6 @@ import util.DBUtil;
 public class ChatBotDAO {
 	public String getFoodName(Connection conn, List<WordCategory> wcList) throws SQLException {
 		List<String> excludeList = RememberWordList.getRefusalList();
-		System.out.println("거절음식리스트 : " + excludeList);
 		String exclude = "";
 		if (excludeList.size() >= 1) {
 			for (int i = 0; i < excludeList.size(); i++) {
@@ -321,5 +320,25 @@ public class ChatBotDAO {
 			DBUtil.close(conn);
 		}
 		return result;
+	}
+
+	public List<String> selectFoodByAssoiate(Connection conn, String food) throws SQLException {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		List<String> list = new ArrayList<>();
+
+		try {
+			stmt = conn.prepareStatement("select * from associate where food = ? order by count DESC limit 3;");
+			stmt.setString(1, food);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				String word = rs.getString("word");
+				list.add(word);
+			}
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+		}
+		return list;
 	}
 }

@@ -21,7 +21,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chatBot.dao.ChatBotDAO;
 import chatBot.model.RememberWordList;
@@ -35,13 +34,13 @@ import imgFinder.ImageReturner;
 import nlp.NLP;
 import util.DBUtil;
 import util.ReturnTranslate;
+import util.Setting;
 
 @WebServlet("/chat")
 public class ChatServlet extends HttpServlet {
 	UnKnownService us = new UnKnownService();
 	RecommendService rs = new RecommendService();
 	InsertService is = new InsertService();
-	ObjectMapper mapper = new ObjectMapper();
 	ChatBotDAO dao = new ChatBotDAO();
 	UpdateService updateS = new UpdateService();
 	Divide d = new Divide();
@@ -122,7 +121,7 @@ public class ChatServlet extends HttpServlet {
 			map.put("answer", "");
 			answer = new JSONObject(map);
 			String text = String.valueOf(answer);
-			respSetting(resp, 200, text);
+			Setting.resp(resp, 200, text);
 		} else {
 			System.out.println("chat : " + chat);
 			// chat : 따뜻 시원 한강 냉면
@@ -135,15 +134,15 @@ public class ChatServlet extends HttpServlet {
 			if (foods.size() == 1 && words.size() == 0) {
 				String food = foods.get(0);
 				String text = "{\"ask\": \"" + food + "\"}";
-				respSetting(resp, 200, text);
+				Setting.resp(resp, 200, text);
 			} else if (words.size() != 0) {
 				// 음식을 단어 3개로 변환하는 메소드 만들기
 				foodChange3Words(foods, words);
 				// chat을 자연어 처리해서 wordList로 넣는다
-				String unknownWord = us.unknownWord(chat); // 단어 리스트를 넣어서 모르는 단어 하나를 받는다
+				String unknownWord = us.unknownWord(words); // 단어 리스트를 넣어서 모르는 단어 하나를 받는다
 				if (unknownWord != null) { // 모르는 단어가 있을 때 - 모르는 단어가 없으면 null을 반환해서 조건처리한다
 					String json = "{\"request\": \"" + unknownWord + "\"}";
-					respSetting(resp, 200, json);
+					Setting.resp(resp, 200, json);
 				} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
 					System.out.println("두포스트에서 모르는단어 없을때 : " + RememberWordList.getKnownWordList());
 					String foodName = foodName(RememberWordList.getKnownWordList());
@@ -151,7 +150,7 @@ public class ChatServlet extends HttpServlet {
 					map.put("img", ImageReturner.imageReturn(foodName));
 					answer = new JSONObject(map);
 					String text = String.valueOf(answer);
-					respSetting(resp, 200, text);
+					Setting.resp(resp, 200, text);
 				}
 			} else {
 				System.out.println("서블릿에서 문제가 있습니다.");
@@ -160,7 +159,20 @@ public class ChatServlet extends HttpServlet {
 	}
 
 	private void foodChange3Words(List<String> foods, List<String> words) {
-		for (String string : foods) {
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			for (String food : foods) {
+				List<String> list;
+				list = dao.selectFoodByAssoiate(conn, food);
+				for (String word : list) {
+					words.add(word);
+				}
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException();
+		} finally {
+			DBUtil.close(conn);
 		}
 	}
 
@@ -320,18 +332,12 @@ public class ChatServlet extends HttpServlet {
 			List<String> foodList = is.searchAllFood(conn);
 			map.put("list", foodList);
 			JSONObject list = new JSONObject(map);
-			respSetting(resp, 200, String.valueOf(list));
+			Setting.resp(resp, 200, String.valueOf(list));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException();
 		} finally {
 			DBUtil.close(conn);
 		}
-	}
-
-	private void respSetting(HttpServletResponse resp, int status, String text) throws IOException {
-		resp.setStatus(status);
-		resp.setHeader("Content-Type", "application/json;charset=utf-8");
-		resp.getWriter().write(text);
 	}
 }
