@@ -2,7 +2,6 @@ package chatBot.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,7 +44,6 @@ public class ChatServlet extends HttpServlet {
 	ChatBotDAO dao = new ChatBotDAO();
 	UpdateService updateS = new UpdateService();
 
-	
 //  배포시 절대경로 찾기위한 메소드 인데 먼가 잘 안된다... 나중에 참고 가능성이 있으니 남겨둠
 //	public static String filepath;
 //	@Override
@@ -56,41 +53,19 @@ public class ChatServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Connection conn = null;
-		try {
-			conn = DBUtil.getConnection();
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			List<String> foodList = is.searchAllFood(conn);
-			map.put("list", foodList);
-			JSONObject list = new JSONObject(map);
-			resp.getWriter().write(String.valueOf(list));
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json;charset=utf-8");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException();
-		} finally {
-			DBUtil.close(conn);
-		}
+		processDoGoet(resp);
 	}
 
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// request json 형태로 오는 정보임
-		StringBuilder sb = new StringBuilder();
-		BufferedReader br = req.getReader();
-		String line;
-		while ((line = br.readLine()) != null) {
-			sb.append(line);
-		}
-		String body = sb.toString();
-		System.out.println(body);
+		String body = requestReader(req);
 		JSONParser parser = new JSONParser();
 
 		Connection conn = null;
 		try {
 			conn = DBUtil.getConnection();
-			conn.setAutoCommit(false);
+
+//			 conn.setAutoCommit(false);
 			JSONArray jsonArr = (JSONArray) parser.parse(body);
 			System.out.println(jsonArr.size());
 			// word + category words에 넣어주기
@@ -111,104 +86,25 @@ public class ChatServlet extends HttpServlet {
 			System.out.println("category: " + category);
 
 			if (category.equals("거절")) {
-				System.out.println("두풋 거절방식");
-				updateS.updateByCount(conn, -1, strWord);
-				RememberWordList.addRefusalList(strWord);
+				processDoPutByRefusal(conn, category);
 			} else if (category.equals("수락")) {
-				System.out.println("두풋 수락방식");
-				updateS.updateByCount(conn, 1, strWord);
+				processDoPutByAccept(conn, category);
 			} else if (category.equals("음식")) {
-				System.out.println("두풋 음식방식");
-				// 모든 words의 word와 category 가져와서 해당카데고리에
-				// words foodTarget 넣어주기
-				// words 에 넣어주기
-				String categoryT = ReturnTranslate.Translate(category);
-				System.out.println("번역된 카테고리" + categoryT);
-				is.insertFood(conn, strWord);
-				List<WordCategory> wordList = is.searchAllWord(conn);
-				System.out.println("wordList : " + wordList);
-				for (WordCategory wc : wordList) {
-					System.out.println("현재 words" + wc.getWord());
-					String currentWord = wc.getWord();
-					System.out.println("현재 words의 카테고리" + wc.getCategory());
-					String currentCategory = wc.getCategory();
-					is.insertCategory(conn, currentCategory, currentWord, strWord);
-				}
-			} else { // 거절, 수락, 음식 아니면 정보 저장후에 음식명 출력해야함
-				System.out.println("두풋 저장방식");
-				// words 에 넣어주기
-				String categoryT = ReturnTranslate.Translate(category);
-				System.out.println("번역된 카테고리" + categoryT);
-				// 영어로 번역
-				is.insert(conn, strWord, categoryT);
-
-				// 해당 카테고리에 word, food 넣어주기
-
-				// 새로운 단어 학습할때 해당카데고리에 모든 음식을 추가해주기
-
-				// 메소드 food 테이블 접근해서 모든 food 가지는 list<String> 만들기
-
-				// food 테이블 접근해서 word, 모든 food 넣어주고
-				// 대화를 통해서 사용자가 선택한 food는 중복검사해서
-				// 없으면 넣어주기 -> 완전 새로운 food일 경우니까 word접근해서 모든 테이블에 행으로 추가해주기
-
-				// String refer foods
-				// 먼저 food에 있는거 다때려 박고
-				List<String> foodList = is.searchAllFood(conn);
-				System.out.println("현재 모든 푸드리스트" + foodList.toString());
-				for (String str : foodList) {
-					is.insertCategory(conn, categoryT, strWord, str);
-				}
-				// 중복검사해서 있는거 카운트++, 없는거는 추가해주는데 새로운 food니까 food에 넣고, words에 접근해서 모든행들에 새로운
-				// food넣어주기
-				for (int i = 2; i < jsonArr.size(); i++) {
-
-					System.out.println(jsonArr.get(i));
-					JSONObject food = (JSONObject) jsonArr.get(i);
-					String foodTarget = food.get("food").toString();
-
-					if (!is.searchFood(conn, foodTarget)) {
-						System.out.println("food: " + foodTarget);
-						// food에 해당 새로운 음식인 foodTarget 넣어주고
-						is.insertFood(conn, foodTarget);
-						// 모든 words의 word와 category 가져와서 해당카데고리에
-						// words foodTarget 넣어주기
-						List<WordCategory> wordList = is.searchAllWord(conn);
-						for (WordCategory wc : wordList) {
-							System.out.println("현재 words" + wc.getWord());
-							String currentWord = wc.getWord();
-							System.out.println("현재 words의 카테고리" + wc.getCategory());
-							String currentCategory = wc.getCategory();
-							is.insertCategory(conn, currentCategory, currentWord, foodTarget);
-						}
-					} else {
-						// 이미 있는 단어니까
-						// 해당 카테고리에 단어 ,foodTarget 찾아서 카운트 + 10 해주기
-						is.updateMatched(conn, categoryT, strWord, foodTarget);
-					}
-				}
+				processDoPutByFood(conn, category, category);
+			} else if (category.equals("예외")) {
+				// 작성중
+				processDoPutByExceptionWord(conn, category, category);
+			} else if (category.equals("단어")) { // 거절, 수락, 음식 아니면 정보 저장후에 음식명 출력해야함
+				processDoPutBySave(conn, category, category, jsonArr);
+			} else {
+				System.out.println("두포스트에 잘못된 작동");
 			}
 		} catch (ParseException e) {
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 			e.printStackTrace();
 		} catch (SQLException e) {
-			try {
-				conn.rollback();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
 			e.printStackTrace();
 		} finally {
-			try {
-				conn.setAutoCommit(true);
-				DBUtil.close(conn);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			DBUtil.close(conn);
 		}
 
 	}
@@ -252,6 +148,107 @@ public class ChatServlet extends HttpServlet {
 		}
 	}
 
+	private void processDoPutByExceptionWord(Connection conn, String strWord, String category) {
+		System.out.println("두풋 예외단어 저장");
+		String categoryT = ReturnTranslate.Translate(category);
+		dao.insertException(conn, categoryT);
+	}
+
+	private void processDoPutBySave(Connection conn, String strWord, String category, JSONArray jsonArr) {
+		System.out.println("두풋 저장방식");
+		// words 에 넣어주기
+		String categoryT = ReturnTranslate.Translate(category);
+		System.out.println("번역된 카테고리" + categoryT);
+		// 영어로 번역
+		is.insert(conn, strWord, categoryT);
+
+		// 해당 카테고리에 word, food 넣어주기
+
+		// 새로운 단어 학습할때 해당카데고리에 모든 음식을 추가해주기
+
+		// 메소드 food 테이블 접근해서 모든 food 가지는 list<String> 만들기
+
+		// food 테이블 접근해서 word, 모든 food 넣어주고
+		// 대화를 통해서 사용자가 선택한 food는 중복검사해서
+		// 없으면 넣어주기 -> 완전 새로운 food일 경우니까 word접근해서 모든 테이블에 행으로 추가해주기
+
+		// String refer foods
+		// 먼저 food에 있는거 다때려 박고
+		List<String> foodList = is.searchAllFood(conn);
+		System.out.println("현재 모든 푸드리스트" + foodList.toString());
+		for (String str : foodList) {
+			is.insertCategory(conn, categoryT, strWord, str);
+		}
+		// 중복검사해서 있는거 카운트++, 없는거는 추가해주는데 새로운 food니까 food에 넣고, words에 접근해서 모든행들에 새로운
+		// food넣어주기
+		for (int i = 2; i < jsonArr.size(); i++) {
+
+			System.out.println(jsonArr.get(i));
+			JSONObject food = (JSONObject) jsonArr.get(i);
+			String foodTarget = food.get("food").toString();
+
+			if (!is.searchFood(conn, foodTarget)) {
+				System.out.println("food: " + foodTarget);
+				// food에 해당 새로운 음식인 foodTarget 넣어주고
+				is.insertFood(conn, foodTarget);
+				// 모든 words의 word와 category 가져와서 해당카데고리에
+				// words foodTarget 넣어주기
+				List<WordCategory> wordList = is.searchAllWord(conn);
+				for (WordCategory wc : wordList) {
+					System.out.println("현재 words" + wc.getWord());
+					String currentWord = wc.getWord();
+					System.out.println("현재 words의 카테고리" + wc.getCategory());
+					String currentCategory = wc.getCategory();
+					is.insertCategory(conn, currentCategory, currentWord, foodTarget);
+				}
+			}
+		}
+	}
+
+	private void processDoPutByFood(Connection conn, String strWord, String category) {
+		System.out.println("두풋 음식방식");
+		// 모든 words의 word와 category 가져와서 해당카데고리에
+		// words foodTarget 넣어주기
+		// words 에 넣어주기
+		String categoryT = ReturnTranslate.Translate(category);
+		System.out.println("번역된 카테고리" + categoryT);
+		is.insertFood(conn, strWord);
+		List<WordCategory> wordList = is.searchAllWord(conn);
+		System.out.println("wordList : " + wordList);
+		for (WordCategory wc : wordList) {
+			System.out.println("현재 words" + wc.getWord());
+			String currentWord = wc.getWord();
+			System.out.println("현재 words의 카테고리" + wc.getCategory());
+			String currentCategory = wc.getCategory();
+			is.insertCategory(conn, currentCategory, currentWord, strWord);
+		}
+	}
+
+	private void processDoPutByAccept(Connection conn, String strWord) throws SQLException {
+		System.out.println("두풋 수락방식");
+		updateS.updateByCount(conn, 1, strWord);
+	}
+
+	private void processDoPutByRefusal(Connection conn, String strWord) throws SQLException {
+		System.out.println("두풋 거절방식");
+		updateS.updateByCount(conn, -1, strWord);
+		RememberWordList.addRefusalList(strWord);
+	}
+
+	private String requestReader(HttpServletRequest req) throws IOException {
+		// request json 형태로 오는 정보임
+		StringBuilder sb = new StringBuilder();
+		BufferedReader br = req.getReader();
+		String line;
+		while ((line = br.readLine()) != null) {
+			sb.append(line);
+		}
+		String body = sb.toString();
+		System.out.println(body);
+
+		return body;
+	}
+
 //	public void insert(String requestData) {
 //		is.insert(requestData);
 //	}
@@ -286,5 +283,25 @@ public class ChatServlet extends HttpServlet {
 		list = nlp.doNLP(chat);
 		list = rs.removeException(list);
 		return list;
+	}
+
+	private void processDoGoet(HttpServletResponse resp) throws IOException {
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			List<String> foodList = is.searchAllFood(conn);
+			map.put("list", foodList);
+			JSONObject list = new JSONObject(map);
+			resp.getWriter().write(String.valueOf(list));
+			resp.setStatus(200);
+			resp.setHeader("Content-Type", "application/json;charset=utf-8");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		} finally {
+			DBUtil.close(conn);
+		}
+
 	}
 }

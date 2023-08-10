@@ -2,26 +2,12 @@ package util;
 
 public class ReturnTranslate {
 	public static String Translate(String target) {
-		if (target.equals("날씨")) {
-			return "weather";
-		} else if (target.equals("장소")) {
-			return "place";
-		} else if (target.equals("재료")) {
-			return "ingredient";
-		} else if (target.equals("사람")) {
-			return "person";
-		} else if (target.equals("행동")) {
-			return "action";
-		} else if (target.equals("맛")) {
-			return "taste";
-		} else if (target.equals("예외")) {
-			return "exceptions";
-		} else if (target.equals("양")) {
-			return "amount";
-		} else if (target.equals("예산")) {
-			return "budget";
+		if (target.equals("단어")) {
+			return "word";
 		} else if (target.equals("음식")) {
 			return "food";
+		} else if (target.equals("예외")) {
+			return "exceptions";
 		}
 
 		return "잘못된거임";
