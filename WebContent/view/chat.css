@@ -79,9 +79,10 @@ button {
 }
 
 #chat {
-  width: 85%;
+  width: 82%;
   height: calc(100% - 1px);
   border: none;
+  padding-left: 15px;
   padding-bottom: 0;
 }
 
@@ -133,7 +134,7 @@ button {
   justify-content: space-around;
 }
 
-#map {
+#login {
   width: 154px;
   height: 50px;
   flex-shrink: 0;
@@ -143,7 +144,7 @@ button {
   background: #ffe45e;
 }
 
-#map:hover {
+#login:hover {
   background-color: #cfbe67;
   transition: 0.7s;
 }
