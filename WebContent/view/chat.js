@@ -150,6 +150,7 @@ function handleOptionSelect(option, id) {
         "<a href = 'view/location.html'>음식점 보러가기</a>"
       );
     }
+    optionList = [];
   } else if (id === "isFood") {
     if (option === "응") {
       addOptionList("category", "음식");
