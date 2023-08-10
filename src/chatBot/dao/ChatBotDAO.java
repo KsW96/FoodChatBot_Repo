@@ -16,13 +16,10 @@ public class ChatBotDAO {
 	public String getFoodName(Connection conn, List<WordCategory> wcList) throws SQLException {
 		List<String> excludeList = RememberWordList.getRefusalList();
 		System.out.println("거절음식리스트 : " + excludeList);
-		String exclude = "AND food_id NOT IN ('갈비', '갈비탕'";
+		String exclude = "";
 		if (excludeList.size() >= 1) {
-			exclude += "AND food_id NOT IN ('" + excludeList.get(0) + "'";
-			if (excludeList.size() >= 2) {
-				for (int i = 1; i < excludeList.size(); i++) {
-					exclude += "' " +excludeList.get(i) + "' ";
-				}
+			for (int i = 0; i < excludeList.size(); i++) {
+				exclude += "AND food_id != ('+"+excludeList.get(i)+"+')";
 			}
 		}
 		System.out.println("dao에서 wcList : " + wcList);
@@ -31,11 +28,11 @@ public class ChatBotDAO {
 		ResultSet rs = null;
 		
 		String words = "";
-		String word = wcList.get(0).getWord();
+		String word = "'"+wcList.get(0).getWord()+"'";
 		words += word;
 		for (int i = 1; i < wcList.size(); i++) {
 			word = wcList.get(i).getWord();
-			words += ", "+word;
+			words += ", '"+word+"'";
 		}
 		try {
 
@@ -43,7 +40,7 @@ public class ChatBotDAO {
 					"FROM (\r\n" + 
 					"    SELECT food_id, SUM(count) AS total_count\r\n" + 
 					"    FROM associate\r\n" + 
-					"    WHERE words_id IN ("+ words +") " + exclude +")"+ 
+					"    WHERE words_id IN ("+ words +") " + exclude + 
 					"    GROUP BY food_id\r\n" + 
 					") AS grouped_data\r\n" + 
 					"GROUP BY food_id\r\n" + 
@@ -54,7 +51,7 @@ public class ChatBotDAO {
 			stmt = conn.prepareStatement(li);
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				String food = rs.getString("food");
+				String food = rs.getString("food_id");
 				return food;
 			}
 		} finally {
