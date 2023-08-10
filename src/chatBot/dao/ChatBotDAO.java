@@ -258,4 +258,21 @@ public class ChatBotDAO {
 		}
 		return -1;
 	}
+
+	public int insertException(Connection conn, String word) {
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement("INSERT INTO `foodchat`.`exceptions` (`word`) VALUES (?);");
+			stmt.setString(1, word);
+			return stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally
+
+		{
+			DBUtil.close(stmt);
+		}
+		return -1;
+	}
 }
