@@ -1,4 +1,4 @@
-const url = "http://192.168.0.109:8080/foodChatBot/chat";
+const url = "http://192.168.0.113:8080/foodChatBot/chat";
 const message = document.getElementById("chat");
 const submit = document.getElementById("submit");
 const chatLog = document.getElementById("chatLog");
@@ -36,8 +36,12 @@ function setFoodList() {
     });
 }
 
-function addOptionList(obj) {
+function addOptionList(key, value) {
+  let obj = {
+    [key]: value,
+  };
   optionList.push(obj);
+  console.log(optionList);
 }
 
 function fetchData(obj, method) {
@@ -66,20 +70,6 @@ function send(e) {
   message.value = "";
 }
 
-function addFood(e) {
-  if (e !== null) {
-    e.preventDefault();
-  }
-  if (foodList.includes(message.value)) {
-    handleOptionSelect(message.value, "food");
-  } else {
-    addMessage("myMsg", message.value);
-    addMessage("anotherMsg", "다른음식은 어떤게 있어요?");
-    toast("미리보기에 있는 음식으로 입력해주세요", "error");
-  }
-  message.value = "";
-}
-
 function handleResponse(data) {
   // 추천의 답 -> chat : Y/N 날려줌
   if (data.answer !== undefined) {
@@ -90,7 +80,7 @@ function handleResponse(data) {
       );
     } else {
       chatBotAnswer();
-      addOptionList((obj = { request: data.answer }));
+      addOptionList("request", data.answer);
       localStorage.setItem("keyword", data.answer);
       addMessage("anotherMsg", data.answer + " 어때요?");
       addImg(
@@ -99,18 +89,19 @@ function handleResponse(data) {
           data.img +
           "' referrerpolicy='no-referrer' height = '300' />"
       );
-      addOptions(["좋아요!", "별로에요.."], "request");
+      addOptions(["좋아!", "별로야"], "request");
     }
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
   if (data.request !== undefined) {
-    addOptionList((obj = { request: data.request }));
+    addOptionList("request", data.request);
     addMessage(
       "anotherMsg",
-      "모르는 단어가 포함되어 있었어요... '" + data.request + "' 이(가) 뭐에요?"
+      "모르는 단어가 포함되어 있었어요.. '" +
+        data.request +
+        "' 이(가) 음식인가요?"
     );
-    addOptions(["사람", "날씨", "장소", "행동", "예산", "양"], "category");
-    addOptions(["음식", "재료", "맛"], "category");
+    addOptions(["응", "아니"], "isFood");
   }
 }
 
@@ -134,23 +125,16 @@ function addOptions(options, id) {
 function handleOptionSelect(option, id) {
   message.disabled = false;
   submit.disabled = false;
-  const obj = {
-    [id]: option,
-  };
-  addOptionList(obj);
-  console.log(optionList);
+
   addMessage("myMsg", option);
-  if (id === "chat" || id === "request") {
-    optionList.pop();
-  }
   if (id === "request") {
-    if (option === "별로에요..") {
+    if (option === "별로야") {
       nope = nope + 1;
-      addOptionList({ category: "거절" });
+      addOptionList("category", "거절");
       addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
       toast("선호하는 맛을 이야기 해보세요!", "info");
-    } else {
-      addOptionList({ category: "수락" });
+    } else if (option === "좋아!") {
+      addOptionList("category", "수락");
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
       addImg(
         "anotherMsg",
@@ -159,40 +143,39 @@ function handleOptionSelect(option, id) {
     }
     fetchData(optionList, "PUT");
     optionList = [];
-  } else if (option === "음식" || option === "안돼") {
-    if (option === "음식") {
-      addMessage("anotherMsg", "메뉴에 저장했어요.");
-    } else {
-      addMessage("anotherMsg", "네! 저장했어요.");
+  } else if (id === "isFood") {
+    if (option === "응") {
+      addOptionList("category", "음식");
+      fetchData(optionList, "PUT");
+      optionList = [];
+      addMessage("anotherMsg", "이제 물어봐 주세요.");
+      toast("감사합니다! 저장했어요.", "success");
+    } else if (option === "아니") {
+      addMessage("anotherMsg", "그건 음식을 연상할 수 있는 단어인가요?");
+      addOptions(["응", "아니"], "isWord");
+    }
+  } else if (id === "isWord") {
+    if (option === "응") {
+      addOptionList("category", "단어");
+    } else if (option === "아니") {
+      addOptionList("category", "예외");
     }
     fetchData(optionList, "PUT");
     optionList = [];
     addMessage("anotherMsg", "이제 물어봐 주세요.");
-  } else if (id === "category" && option !== "음식") {
-    addMessage("anotherMsg", "그것은 음식과 매칭이 되나요?");
-    addOptions(["돼", "안돼"], "chat");
-  } else if (option === "돼" || option === "있어") {
-    if (option === "돼") {
-      addFoodOption();
-    }
-    addMessage("anotherMsg", "그것은 어떤음식과 매칭이 되나요?");
-  } else if (id === "food") {
-    addMessage("anotherMsg", "매칭되는 음식이 더 있나요?");
-    addOptions(["있어", "없어"], "chat");
-  } else if (option === "없어") {
     toast("감사합니다! 저장했어요.", "success");
-    fetchData(optionList, "PUT");
-    removeFoodOption();
-    optionList = [];
-    submit.id = "submit";
-    addMessage("anotherMsg", "이제 물어봐 주세요.");
   }
-  if (id !== "food") {
-    document.getElementById("optionsDiv").remove();
-  }
-  if (id === "category") {
-    document.getElementById("optionsDiv").remove();
-  }
+  document.getElementById("optionsDiv").remove();
+}
+
+function userAnswer() {
+  let yes = [
+    "그래", "응", "이해", "알", "오케", "맞아", "좋"
+  ];
+  let no = [
+    "아니", "거절", "별로", "싫어", "안", ""
+  ];
+  return false;
 }
 
 function chatBotAnswer() {
@@ -273,91 +256,16 @@ function scrollToBottom() {
 }
 
 function handleButtonClick(e) {
-  if (optionList.length === 0) {
-    send(e);
-  } else {
-    addFood(e);
-  }
+  send(e);
 }
 
 window.addEventListener("load", () => {
   firstMsg();
   document.getElementById("map").addEventListener("click", () => {
-	window.location.href = "view/map.html"
+    window.location.href = "view/map.html";
   });
   submit.addEventListener("click", handleButtonClick);
 });
-
-// 드롭다운 메뉴 표시하기
-const optionListDiv = document.getElementById("optionListDiv");
-const dropdown = document.querySelector(".dropdown");
-
-function addFoodOption() {
-  setFoodList();
-  console.log("addFoodOption() 호출");
-  chat.addEventListener("input", filterOptions);
-  chat.addEventListener("focus", focusDropdown);
-  chat.addEventListener("blur", hideDropdown);
-}
-
-function removeFoodOption() {
-  console.log("removeFoodOption() 호출");
-  chat.removeEventListener("input", filterOptions);
-  chat.removeEventListener("focus", focusDropdown);
-  chat.removeEventListener("blur", hideDropdown);
-  foodList = [];
-}
-
-dropdown.addEventListener("mousedown", function (e) {
-  e.preventDefault();
-});
-
-function showDropdown() {
-  dropdown.classList.add("show-dropdown");
-}
-
-function hideDropdown() {
-  dropdown.classList.remove("show-dropdown");
-}
-
-function focusDropdown() {
-  if (chat.value.trim() === "") {
-    const searchTerm = chat.value.toLowerCase();
-    const filteredOptions = foodList.filter((option) =>
-      option.toLowerCase().includes(searchTerm)
-    );
-    updateDropdownOptions(filteredOptions);
-  }
-  showDropdown();
-}
-
-function filterOptions() {
-  const searchTerm = chat.value.toLowerCase();
-  const filteredOptions = foodList.filter((option) =>
-    option.toLowerCase().includes(searchTerm)
-  );
-  updateDropdownOptions(filteredOptions);
-}
-
-function updateDropdownOptions(filteredOptions) {
-  // 기존 옵션 목록 삭제
-  while (optionListDiv.firstChild) {
-    optionListDiv.removeChild(optionListDiv.firstChild);
-  }
-
-  // 필터링된 옵션 목록 추가
-  filteredOptions.forEach((optionText) => {
-    const optionDiv = document.createElement("div");
-    optionDiv.textContent = optionText;
-    optionDiv.className = "dropdown-item"; // 추가된 부분: 스타일을 적용하기 위해 클래스 추가
-    optionDiv.addEventListener("click", function () {
-      // 옵션 선택 시 검색창에 값을 넣고 드롭다운 닫기
-      chat.value = optionText;
-      hideDropdown();
-    });
-    optionListDiv.appendChild(optionDiv);
-  });
-}
 
 function toast(text, icon) {
   const Toast = Swal.mixin({
