@@ -14,16 +14,14 @@ import util.DBUtil;
 
 public class ChatBotDAO {
 	public String getFoodName(Connection conn, List<WordCategory> wcList) throws SQLException {
-		List<String> test = RememberWordList.getRefusalList();
-		System.out.println("거절음식리스트 : " + test);
-
-		String testStr = "";
-
-		if (test.size() >= 1) {
-			testStr += "WHERE food <> '" + test.get(0) + "' ";
-			if (test.size() >= 2) {
-				for (int i = 1; i < test.size(); i++) {
-					testStr += " AND food <> '" + test.get(i) + "' ";
+		List<String> excludeList = RememberWordList.getRefusalList();
+		System.out.println("거절음식리스트 : " + excludeList);
+		String exclude = "AND food_id NOT IN ('갈비', '갈비탕'";
+		if (excludeList.size() >= 1) {
+			exclude += "AND food_id NOT IN ('" + excludeList.get(0) + "'";
+			if (excludeList.size() >= 2) {
+				for (int i = 1; i < excludeList.size(); i++) {
+					exclude += "' " +excludeList.get(i) + "' ";
 				}
 			}
 		}
@@ -31,22 +29,27 @@ public class ChatBotDAO {
 
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
+		
+		String words = "";
+		String word = wcList.get(0).getWord();
+		words += word;
+		for (int i = 1; i < wcList.size(); i++) {
+			word = wcList.get(i).getWord();
+			words += ", "+word;
+		}
 		try {
-			String plusSQL = "";
-			String union = "UNION ALL ";
-			for (int i = 0; i < wcList.size(); i++) {
-				String tableName = wcList.get(i).getCategory();
-				String word = "'" + wcList.get(i).getWord() + "'";
-				if (i != 0) {
-					plusSQL += union;
-				}
-				plusSQL += "SELECT food, count FROM " + tableName + " where word = " + word;
-			}
 
-			String li = "SELECT food, SUM(count) AS result FROM (" + plusSQL + ") AS combined_table " + testStr
-					+ "GROUP BY food order by result DESC LIMIT 1;";
+			String li = "SELECT food_id, MAX(total_count) AS max_total_count\r\n" + 
+					"FROM (\r\n" + 
+					"    SELECT food_id, SUM(count) AS total_count\r\n" + 
+					"    FROM associate\r\n" + 
+					"    WHERE words_id IN ("+ words +") " + exclude +")"+ 
+					"    GROUP BY food_id\r\n" + 
+					") AS grouped_data\r\n" + 
+					"GROUP BY food_id\r\n" + 
+					"ORDER BY max_total_count DESC\r\n" + 
+					"LIMIT 1;";
 
-//			String li = "SELECT food, SUM(count) AS result FROM ("+plusSQL+") AS combined_table GROUP BY food order by result DESC LIMIT 1;";
 			System.out.println("dao에서 쿼리문 : " + li);
 			stmt = conn.prepareStatement(li);
 			rs = stmt.executeQuery();
