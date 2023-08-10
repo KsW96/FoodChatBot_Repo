@@ -41,6 +41,7 @@ function addOptionList(key, value) {
     [key]: value,
   };
   optionList.push(obj);
+  console.log(optionList);
 }
 
 function fetchData(obj, method) {
@@ -88,7 +89,7 @@ function handleResponse(data) {
           data.img +
           "' referrerpolicy='no-referrer' height = '300' />"
       );
-      addOptions(["좋아요!", "별로에요.."], "request");
+      addOptions(["좋아!", "별로야"], "request");
     }
   }
   // 모르는 단어의 답 -> 단어의 정보들 날려줌
@@ -127,12 +128,12 @@ function handleOptionSelect(option, id) {
 
   addMessage("myMsg", option);
   if (id === "request") {
-    if (option === "별로에요..") {
+    if (option === "별로야") {
       nope = nope + 1;
       addOptionList("category", "거절");
       addMessage("anotherMsg", "그럼 어떤게 먹고 싶어요?");
       toast("선호하는 맛을 이야기 해보세요!", "info");
-    } else if (option === "좋아요") {
+    } else if (option === "좋아!") {
       addOptionList("category", "수락");
       addMessage("anotherMsg", "근처 음식점을 소개해줄게요!");
       addImg(
@@ -165,7 +166,6 @@ function handleOptionSelect(option, id) {
     toast("감사합니다! 저장했어요.", "success");
   }
   document.getElementById("optionsDiv").remove();
-  console.log(optionList);
 }
 
 function userAnswer() {
