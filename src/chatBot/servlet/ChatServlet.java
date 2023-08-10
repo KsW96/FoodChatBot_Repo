@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import chatBot.dao.ChatBotDAO;
 import chatBot.model.RememberWordList;
 import chatBot.model.WordCategory;
+import chatBot.service.Divide;
 import chatBot.service.InsertService;
 import chatBot.service.RecommendService;
 import chatBot.service.UnKnownService;
@@ -43,6 +44,7 @@ public class ChatServlet extends HttpServlet {
 	ObjectMapper mapper = new ObjectMapper();
 	ChatBotDAO dao = new ChatBotDAO();
 	UpdateService updateS = new UpdateService();
+	Divide d = new Divide();
 
 //  배포시 절대경로 찾기위한 메소드 인데 먼가 잘 안된다... 나중에 참고 가능성이 있으니 남겨둠
 //	public static String filepath;
@@ -86,16 +88,16 @@ public class ChatServlet extends HttpServlet {
 			System.out.println("category: " + category);
 
 			if (category.equals("거절")) {
-				processDoPutByRefusal(conn, category);
+				processDoPutByRefusal(conn, strWord);
 			} else if (category.equals("수락")) {
-				processDoPutByAccept(conn, category);
+				processDoPutByAccept(conn, strWord);
 			} else if (category.equals("음식")) {
-				processDoPutByFood(conn, category, category);
+				processDoPutByFood(conn, strWord, category);
 			} else if (category.equals("예외")) {
 				// 작성중
-				processDoPutByExceptionWord(conn, category, category);
+				processDoPutByExceptionWord(conn, strWord);
 			} else if (category.equals("단어")) { // 거절, 수락, 음식 아니면 정보 저장후에 음식명 출력해야함
-				processDoPutBySave(conn, category, category, jsonArr);
+				processDoPutBySave(conn, strWord, category, jsonArr);
 			} else {
 				System.out.println("두포스트에 잘못된 작동");
 			}
@@ -115,43 +117,68 @@ public class ChatServlet extends HttpServlet {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		JSONObject answer = null;
 		List<String> chat = splitString(req);
+
 		if (chat == null) {
 			map.put("answer", "");
 			answer = new JSONObject(map);
-			resp.getWriter().write(String.valueOf(answer));
+			String text = String.valueOf(answer);
+			respSetting(resp, 200, text);
 		} else {
 			System.out.println("chat : " + chat);
+			// chat : 따뜻 시원 한강 냉면
+			// 코드생성 = 단어와 음식을 구분해서 저장
+			List<String> words = new ArrayList<String>();
+			List<String> foods = new ArrayList<String>();
+			divide(chat, words, foods);
 
-			// 사용자 입력 문자열
-			if (chat.size() != 0) { // 요청 body의 값이 chat 일때
+			// 단어리스트 0 이면서 음식리스트 1이면 js에 해당음식 지도냐 어울리는 음식추천이냐 질문하는 정보 전달
+			if (foods.size() == 1 && words.size() == 0) {
+				String food = foods.get(0);
+				String text = "{\"ask\": \"" + food + "\"}";
+				respSetting(resp, 200, text);
+			} else if (words.size() != 0) {
+				// 음식을 단어 3개로 변환하는 메소드 만들기
+				foodChange3Words(foods, words);
 				// chat을 자연어 처리해서 wordList로 넣는다
 				String unknownWord = us.unknownWord(chat); // 단어 리스트를 넣어서 모르는 단어 하나를 받는다
 				if (unknownWord != null) { // 모르는 단어가 있을 때 - 모르는 단어가 없으면 null을 반환해서 조건처리한다
-					String requestS = "{\"request\": \"" + unknownWord + "\"}";
-					System.out.println("응답 request : " + requestS);
-					resp.getWriter().write(requestS);
+					String json = "{\"request\": \"" + unknownWord + "\"}";
+					respSetting(resp, 200, json);
 				} else { // 모르는 단어가 없을 때 - unknownWord 가 null 이면 모르는 단어가 없으므로 음식명을 반환한다.
 					System.out.println("두포스트에서 모르는단어 없을때 : " + RememberWordList.getKnownWordList());
 					String foodName = foodName(RememberWordList.getKnownWordList());
 					map.put("answer", foodName);
 					map.put("img", ImageReturner.imageReturn(foodName));
 					answer = new JSONObject(map);
-					System.out.println("응답 answer : " + answer);
-					resp.getWriter().write(String.valueOf(answer));
+					String text = String.valueOf(answer);
+					respSetting(resp, 200, text);
 				}
-				resp.setStatus(200);
-				resp.setHeader("Content-Type", "application/json;charset=utf-8");
 			} else {
-				// 문제있는 상황에 여기로 옵니다.
 				System.out.println("서블릿에서 문제가 있습니다.");
 			}
 		}
 	}
 
-	private void processDoPutByExceptionWord(Connection conn, String strWord, String category) {
+	private void foodChange3Words(List<String> foods, List<String> words) {
+		for (String string : foods) {
+		}
+	}
+
+	private void divide(List<String> chat, List<String> words, List<String> foods) {
+		Connection conn = null;
+		try {
+			conn = DBUtil.getConnection();
+			d.divide(conn, chat, words, foods);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(conn);
+		}
+	}
+
+	private void processDoPutByExceptionWord(Connection conn, String strWord) {
 		System.out.println("두풋 예외단어 저장");
-		String categoryT = ReturnTranslate.Translate(category);
-		dao.insertException(conn, categoryT);
+		dao.insertException(conn, strWord);
 	}
 
 	private void processDoPutBySave(Connection conn, String strWord, String category, JSONArray jsonArr) {
@@ -293,15 +320,18 @@ public class ChatServlet extends HttpServlet {
 			List<String> foodList = is.searchAllFood(conn);
 			map.put("list", foodList);
 			JSONObject list = new JSONObject(map);
-			resp.getWriter().write(String.valueOf(list));
-			resp.setStatus(200);
-			resp.setHeader("Content-Type", "application/json;charset=utf-8");
+			respSetting(resp, 200, String.valueOf(list));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException();
 		} finally {
 			DBUtil.close(conn);
 		}
+	}
 
+	private void respSetting(HttpServletResponse resp, int status, String text) throws IOException {
+		resp.setStatus(status);
+		resp.setHeader("Content-Type", "application/json;charset=utf-8");
+		resp.getWriter().write(text);
 	}
 }
