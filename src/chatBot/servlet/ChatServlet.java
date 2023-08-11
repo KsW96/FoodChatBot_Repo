@@ -135,7 +135,7 @@ public class ChatServlet extends HttpServlet {
 				String food = foods.get(0);
 				String text = "{\"ask\": \"" + food + "\"}";
 				Setting.resp(resp, 200, text);
-			} else if (words.size() != 0) {
+			} else if (words.size() != 0 || foods.size() != 0) {
 				// 음식을 단어 3개로 변환하는 메소드 만들기
 				foodChange3Words(foods, words);
 				// chat을 자연어 처리해서 wordList로 넣는다
