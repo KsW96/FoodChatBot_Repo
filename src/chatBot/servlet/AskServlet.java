@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,9 +16,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
+
 import chatBot.dao.ChatBotDAO;
 import chatBot.model.RememberWordList;
 import chatBot.service.RecommendService;
+import imgFinder.ImageReturner;
 import util.DBUtil;
 import util.Setting;
 
@@ -25,16 +29,21 @@ import util.Setting;
 public class AskServlet extends HttpServlet {
 	ChatBotDAO dao = new ChatBotDAO();
 	RecommendService rs = new RecommendService();
+	HashMap<String, Object> map = new HashMap<String, Object>();
 	
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		JSONObject answer;
 		String food = requestReader(req);
 		System.out.println("ask서블릿의 음식명 : " + food);
 		List<String> words = foodChange3Words(food);
 		String foodName = getFoodName(words);
-		Setting.resp(resp, 200, foodName);
+		map.put("answer", foodName);
+		map.put("img", ImageReturner.imageReturn(foodName));
+		answer = new JSONObject(map);
+		String text = String.valueOf(answer);
+		Setting.resp(resp, 200, text);
 	}
 
 	private String getFoodName(List<String> words) {

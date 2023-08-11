@@ -38,7 +38,7 @@ public class NLP {
 //		komoran.setUserDic("negative.dic");
 
 		// 결론 파라미터에 그냥 절대경로 써서 사용하자.... 이건 방법이없다.... 넘무 어려워
-//		komoran.setUserDic("C://Users//GGG//git//foodChatBot//negative.dic");
+		komoran.setUserDic("C://Users//GGG//git//foodChatBot//negative.dic");
 
 		List<String> list = new ArrayList<>();
 		String userInputText = text;
