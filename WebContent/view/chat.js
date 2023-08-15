@@ -207,9 +207,14 @@ function chatBotAnswer() {
     addMessage("anotherMsg", second[num]);
     toast("더 자세히 이야기 해보세요!", "info");
   } else if (nope === 2) {
-    addMessage("anotherMsg", third[num]);
+    addMessage("anotherMsg", third[0]);
     toast("이제 고를때가 된 것 같은데요!", "info");
+  } else if (nope === 3) {
+    addMessage("anotherMsg", third[1]);
+  } else if (nope === 4) {
+    addMessage("anotherMsg", third[2]);
   } else {
+	nope = 0;
     addMessage("anotherMsg", "아 쫌!!!");
   }
 }
