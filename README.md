@@ -41,7 +41,7 @@
   <tbody>
     <ul>
       <li>📫 Email address : **이메일 칸**</li>
-      <li></li>
+      <li>    GitHub : [문태인](https://github.com/Moon-Taein)</li>
     </ul>
   </tbody>
 </table>
@@ -50,7 +50,7 @@
   <tbody>
     <ul>
       <li>📫 Email address : **ghkfzha1@gmail.com**</li>
-      <li></li>
+      <li>    GitHub : [김성우](https://github.com/KsW96) </li>
     </ul>
   </tbody>
 </table>  
@@ -60,7 +60,7 @@
    <tbody>
     <ul>
       <li>📫 Email address : **이메일 칸**</li>
-      <li></li>
+      <li>GitHub : [김영곤](https://github.com/0gon)</li>
     </ul>
   </tbody>
 </table> 
@@ -70,7 +70,7 @@
    <tbody>
     <ul>
       <li>📫 Email address : **이메일 칸**</li>
-      <li></li>
+      <li>GitHub : [이사라](https://github.com/LeeSara4) </li>
     </ul>
   </tbody>
 </table> 
