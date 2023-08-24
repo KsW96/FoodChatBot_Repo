@@ -11,6 +11,7 @@
 </Ul>
 
 ***
+
 <h3>프로젝트 설명</h3>
 <h4> 알고리즘 구성 </h4>
 <h3></h3>
@@ -28,8 +29,18 @@
 ***
 
 <h3>프로젝트 실행 방법</h3>
-1. tomcat9.0 설치
-2. maven 프로젝트
+준비물
+tomcat9.0 설치
+RDBM or MySQL
+
+foodchat.properties DB 이름으로 바꿔주고
+
+DB 설계를 DB로 하게끔 한다.
+
+
+war파일 경로? 
+
+3. tomcat9.0 ~ 모시깽이
 
 ***
 
