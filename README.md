@@ -1,9 +1,13 @@
-# foodChatBot
-<h2>DUNGS(Dedelicacy User Needs Guide Service</h3>
+<h1>Title : DUNGS(Dedelicacy User Needs Guide Service</h1>
+<h2>SubTitle : foodChatBot</h2>
 
 <h3>Summary</h3>
-기능 모시깽이
-
+<Ul>
+<li>AI 채팅을 통한 음식 추천 기능</li>
+<li>출력 된 음식 이미지 출력</li>
+<li>사용자가 추천된 음식을 선택할 시 지도api 화면 전환</li>
+<li>학습되지 않은 단어에 대한 질문 요청</li>
+</Ul>
 
 <h3>모시깽이 2</h3>
 
