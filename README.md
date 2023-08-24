@@ -126,7 +126,8 @@
 ***
 ### References
 ##### KOMORAN lib URL = [KOMORAN](https://docs.komoran.kr/)
-##### MySQL DB URL = [MySQL](이슈링크걸기)
+##### MySQL DB URL = [MySQL](https://github.com/0gon/foodChatBot/issues/1) Issues 하단에 Dungsfinal 다운 및 사용
+
 
 
 
