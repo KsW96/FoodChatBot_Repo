@@ -39,39 +39,39 @@
 <table>
 <thead>문태인 </thead>
   <tbody>
-    <ol>
+    <ul>
       <li>📫 Email address : **이메일 칸**</li>
       <li></li>
-    </ol>
+    </ul>
   </tbody>
 </table>
 <table>
 <thead>김성우 </thead>
   <tbody>
-    <ol>
+    <ul>
       <li>📫 Email address : **ghkfzha1@gmail.com**</li>
       <li></li>
-    </ol>
+    </ul>
   </tbody>
 </table>  
 </table>
 <table>
 <thead>김영곤 </thead>
    <tbody>
-    <ol>
+    <ul>
       <li>📫 Email address : **이메일 칸**</li>
       <li></li>
-    </ol>
+    </ul>
   </tbody>
 </table> 
 </table>
 <table>
 <thead>이사라 </thead>
    <tbody>
-    <ol>
+    <ul>
       <li>📫 Email address : **이메일 칸**</li>
       <li></li>
-    </ol>
+    </ul>
   </tbody>
 </table> 
 </table>
