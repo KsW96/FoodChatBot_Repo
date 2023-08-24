@@ -48,9 +48,10 @@
 테스트랑 코드 구성 부분은 아래쪽에 따로 추가해서 보여줘도
 
 <h3>특징</h3>
-- AI 알고리즘 구성이 완성단계가 아니기에 허점이 존재
-
-<h3 align="left">Connect with me:</h3>
+<ul>
+ <li></li>AI 알고리즘 구성이 완성단계가 아니기에 허점이 존재
+</ul>
+<h3 align="left">Connect with us</h3>
 <p align="left">
 </p>
 
