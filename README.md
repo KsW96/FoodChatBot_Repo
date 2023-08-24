@@ -39,43 +39,44 @@
 <table>
 <thead>문태인 </thead>
   <tbody>
-    <ul>
+    <ol>
       <li>📫 Email address : **이메일 칸**</li>
       <li></li>
-    </ul>
+    </ol>
   </tbody>
 </table>
 <table>
 <thead>김성우 </thead>
   <tbody>
-    <ul>
+    <ol>
       <li>📫 Email address : **ghkfzha1@gmail.com**</li>
       <li></li>
-    </ul>
+    </ol>
   </tbody>
 </table>  
 </table>
 <table>
 <thead>김영곤 </thead>
    <tbody>
-    <ul>
+    <ol>
       <li>📫 Email address : **이메일 칸**</li>
       <li></li>
-    </ul>
+    </ol>
   </tbody>
 </table> 
 </table>
 <table>
 <thead>이사라 </thead>
    <tbody>
-    <ul>
+    <ol>
       <li>📫 Email address : **이메일 칸**</li>
       <li></li>
-    </ul>
+    </ol>
   </tbody>
 </table> 
 </table>
-<br>
-- 👯 I’m looking to collaborate on [DungsMall](https://github.com/0gon/DungsMall)
+
+## Collaborate
+[DungsMall]: URL "[Optional Title here](https://github.com/0gon/DungsMall)"
 
 
