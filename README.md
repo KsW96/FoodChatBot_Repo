@@ -13,15 +13,21 @@
 ***
 <h3>모시깽이 2</h3>
 
+***
+
 <h3>Web</h3>
 페이지 사진 모시깽이
+
+***
 
 <h3>프로젝트 실행 방법</h3>
 1. tomcat9.0 설치
 2. maven 프로젝트
 
+***
 
-<h3>뱃지</h3>
+
+<h3>Stack</h3>
 <div align=left> 
 <img src="https://img.shields.io/badge/java 8-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
@@ -38,26 +44,34 @@
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
 
-<h3>협업 Tools</h3>
+<h3>Group Tools</h3>
 <div align=left> 
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
 <img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white">
 </div>  
+
+***
+
 <h3>테스트</h3>
 테스트랑 코드 구성 부분은 아래쪽에 따로 추가해서 보여줘도
 
+***
+
 <h3>특징</h3>
 <ul>
- <li></li>AI 알고리즘 구성이 완성단계가 아니기에 허점이 존재
+ <li>AI 알고리즘 구성이 완성단계가 아니기에 허점이 존재</li>
 </ul>
 <h3 align="left">Connect with us</h3>
 <p align="left">
 </p>
 
+
 ***
 
 <h3>팀원</h3>
+
+
 <table>
 <thead>문태인 </thead>
   <tbody>
