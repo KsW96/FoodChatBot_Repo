@@ -60,8 +60,7 @@
 <table>
 <thead>문태인 </thead>
   <tbody>
-    <ul>
-      <li>Part : </li>
+    <ul>      
       <li> Part : </li>
       <li>📫 Email address : **mji3988@gmail.com**</li>      
       <li>[GitHub](https://github.com/Moon-Taein)</li>
