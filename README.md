@@ -104,7 +104,7 @@
 ***
 
 ### Collaborate
-##### GitURL = [DungsMall](https://github.com/0gon/DungsMall) h4
+##### GitURL = [DungsMall](https://github.com/0gon/DungsMall)
 
 ***
 ### References
