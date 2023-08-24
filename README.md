@@ -77,6 +77,6 @@
 </table>
 
 ## Collaborate
-[DungsMall]: URL "[Optional Title here](https://github.com/0gon/DungsMall)"
+[DungsMall](https://github.com/0gon/DungsMall)"
 
 
