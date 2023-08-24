@@ -1,5 +1,6 @@
 <h1>Title : DUNGS(Dedelicacy User Needs Guide Service</h1>
 <h2>SubTitle : foodChatBot</h2>
+***
 
 <h3>Summary</h3>
 <Ul>
@@ -9,6 +10,7 @@
 <li>학습되지 않은 단어에 대한 질문 요청</li>
 </Ul>
 
+***
 <h3>모시깽이 2</h3>
 
 <h3>Web</h3>
