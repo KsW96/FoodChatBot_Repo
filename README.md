@@ -35,7 +35,7 @@
 <p align="left">
 </p>
 
-
+***
 
 <h3>팀원</h3>
 <table>
@@ -77,6 +77,8 @@
   </tbody>
 </table> 
 </table>
+
+***
 
 ### Collaborate
 [DungsMall](https://github.com/0gon/DungsMall)
