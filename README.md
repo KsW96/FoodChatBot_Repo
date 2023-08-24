@@ -19,7 +19,9 @@
 ***
 
 <h3>Web Page</h3>
-페이지 사진 모시깽이
+<img src = "https://github.com/0gon/foodChatBot/assets/134483514/2953793f-0fcc-47c6-92d4-98c9a7ec8d48">
+
+<img src = "https://github.com/0gon/foodChatBot/assets/134483514/dc967312-b429-46fc-8324-3730b381a2e0">
 
 ***
 
