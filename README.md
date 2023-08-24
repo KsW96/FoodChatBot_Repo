@@ -1,4 +1,4 @@
-<h1>Title : DUNGS(Dedelicacy User Needs Guide Service</h1>
+<h1>Title : DUNGS(Dedelicacy User Needs Guide Service)</h1>
 <h2>SubTitle : foodChatBot</h2>
 
 
