@@ -36,8 +36,46 @@
 
 
 <h3>팀원</h3>
-문태인 김성우 김영곤 이사라
+<table>
+<thead>문태인 </thead>
+  <tbody>
+    <ul>
+      <li>📫 Email address : **이메일 칸**</li>
+      <li></li>
+    </ul>
+  </tbody>
+</table>
+<table>
+<thead>김성우 </thead>
+  <tbody>
+    <ul>
+      <li>📫 Email address : **ghkfzha1@gmail.com**</li>
+      <li></li>
+    </ul>
+  </tbody>
+</table>  
+</table>
+<table>
+<thead>김영곤 </thead>
+   <tbody>
+    <ul>
+      <li>📫 Email address : **이메일 칸**</li>
+      <li></li>
+    </ul>
+  </tbody>
+</table> 
+</table>
+<table>
+<thead>이사라 </thead>
+   <tbody>
+    <ul>
+      <li>📫 Email address : **이메일 칸**</li>
+      <li></li>
+    </ul>
+  </tbody>
+</table> 
+</table>
 <br>
 - 👯 I’m looking to collaborate on [DungsMall](https://github.com/0gon/DungsMall)
-<br>
-- 📫 How to reach me **ghkfzha1@gmail.com**
+
+
