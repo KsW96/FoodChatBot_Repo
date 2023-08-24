@@ -33,5 +33,6 @@
 
 <h3>팀원</h3>
 문태인 김성우 김영곤 이사라
+<br>
 - 👯 I’m looking to collaborate on [DungsMall](https://github.com/0gon/DungsMall)
 - 📫 How to reach me **ghkfzha1@gmail.com**
