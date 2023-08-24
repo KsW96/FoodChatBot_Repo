@@ -14,8 +14,6 @@
 
 <h3>프로젝트 설명</h3>
 <h4> 알고리즘 구성 </h4>
-<h3></h3>
-
 <h4>애플리케이션 역할</h4>
 <h4>추가하고 싶은 기능</h4>
 
@@ -29,18 +27,22 @@
 ***
 
 <h3>프로젝트 실행 방법</h3>
+
 준비물
 tomcat9.0 설치
 RDBM or MySQL
 
-foodchat.properties DB 이름으로 바꿔주고
+1. foodchat.zip (DB)를 다운 및 확장자 SQL로 변경
+2. MySQL 로컬 호스트에 admin 추가 (id : dungs , password : dungs )
+3. foodchat 스키마 생성
+4. foodchat 스키마 실행 중 foodchat.sql 실행
+5. tomcat 9.0 appdata => ROOT파일 에 war 파일 추가   
+6. tomcat bin 폴더에서 StartUP.bat 파일 실행
+7. 인터넷 주소창에 localhost:8080 검색.
 
-DB 설계를 DB로 하게끔 한다.
 
-
-war파일 경로? 
-
-3. tomcat9.0 ~ 모시깽이
+위처럼 따라 왔는데 안되는 경우
+   ROOT 폴더에 넣었던 war파일을 압축해제 후 chat.html 실행
 
 ***
 
@@ -59,11 +61,11 @@ war파일 경로?
 <br>
 <img src="https://img.shields.io/badge/maven-02569B?style=for-the-badge&logo=maven&logoColor=white">
 <img src="https://img.shields.io/badge/jsp-003545?style=for-the-badge&logo=jsp&logoColor=white">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 </div>
 
 <h3>Group Tools</h3>
 <div align=left> 
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
 <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white">
 <img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white">
@@ -137,7 +139,7 @@ war파일 경로?
 ***
 ### References
 ##### KOMORAN lib URL = [KOMORAN](https://docs.komoran.kr/)
-##### MySQL DB URL = [MySQL](https://github.com/0gon/foodChatBot/issues/1) Issues 하단에 Dungsfinal 다운 및 사용
+##### MySQL DB Zip = [foodchat](https://github.com/0gon/foodChatBot/files/12355840/dungsfinal.zip)
 
 
 
