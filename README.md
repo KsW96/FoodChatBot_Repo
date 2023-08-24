@@ -12,9 +12,11 @@
 
 ***
 <h3>프로젝트 설명</h3>
-프로젝트 설명<br>
-애플리케이션 역할<br>
-추가하고 싶은 기능<br>
+<h4> 알고리즘 구성 </h4>
+<h3></h3>
+
+<h4>애플리케이션 역할</h4>
+<h4>추가하고 싶은 기능</h4>
 
 ***
 
@@ -72,7 +74,6 @@
 
 <h3>Developers</h3>
 
-
 <table>
 <thead>문태인 </thead>
   <tbody>
@@ -124,5 +125,8 @@
 
 ***
 ### References
+##### KOMORAN lib URL = [KOMORAN](https://docs.komoran.kr/)
+##### MySQL DB URL = [MySQL](이슈링크걸기)
+
 
 
