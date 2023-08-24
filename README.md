@@ -42,7 +42,7 @@
 <thead>문태인 </thead>
   <tbody>
     <ul>
-      <li>📫 Email address : **이메일 칸**</li>
+      <li>📫 Email address : **mji3988@gmail.com**</li>
       <li>[GitHub](https://github.com/Moon-Taein)</li>
     </ul>
   </tbody>
