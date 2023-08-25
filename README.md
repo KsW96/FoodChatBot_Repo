@@ -36,7 +36,7 @@ RDBM or MySQL
 2. MySQL 로컬 호스트에 admin 추가 (id : dungs , password : dungs )
 3. foodchat 스키마 생성
 4. foodchat 스키마 실행 중 foodchat.sql 실행
-5. tomcat 9.0 appdata => ROOT파일 에 war 파일 추가   
+5. tomcat 폴더 내 appdata 폴더에 war 파일 추가
 6. tomcat bin 폴더에서 StartUP.bat 파일 실행
 7. 인터넷 주소창에 localhost:8080 검색.
 
