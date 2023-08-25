@@ -158,6 +158,8 @@
 
 ### References
 
+##### Tomcat link = [Tomcat](https://tomcat.apache.org/download-90.cgi)
+##### MySQL link = [MySQL](https://dev.mysql.com/downloads/installer/)
 ##### KOMORAN lib URL = [KOMORAN](https://docs.komoran.kr/)
 ##### MySQL DB Zip = [foodChatBotDB.zip](https://github.com/0gon/foodChatBot/files/12434946/foodChatBotDB.zip)
 ##### foodChatBot War = [foodChatBot.zip](https://github.com/0gon/foodChatBot/files/12434944/foodChatBot.zip)
