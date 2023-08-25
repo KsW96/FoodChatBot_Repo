@@ -2,7 +2,7 @@
 (Dedelicacy User Needs Guide Service)
 <h2>SubTitle : foodChatBot</h2>
 
-
+<br>
 <h3>Summary</h3>
 <Ul>
 <li>AI 채팅을 통한 음식 추천 기능</li>
@@ -13,6 +13,7 @@
 
 ***
 
+<br>
 <h3>Configuration</h3>
 <h4> 알고리즘 구성 </h4>
 
@@ -28,6 +29,7 @@
 ***
 
 
+<br>
 <h3>Web Page</h3>
 <img src = "https://github.com/0gon/foodChatBot/assets/134483514/2953793f-0fcc-47c6-92d4-98c9a7ec8d48">
 
@@ -36,7 +38,7 @@
 
 ***
 
-
+<br>
 <h3>프로젝트 실행 방법</h3>
 
 준비물
@@ -58,7 +60,7 @@
 
 ***
 
-
+<br>
 <h3>Stack</h3>
 <div align=left> 
 <img src="https://img.shields.io/badge/java 8-007396?style=for-the-badge&logo=java&logoColor=white">
@@ -86,14 +88,14 @@
 
 ***
 
-
+<br>
 <h3>Test</h3>
 테스트랑 코드 구성 부분은 아래쪽에 따로 추가해서 보여줘도
 
 
 ***
 
-
+<br>
 <h3>특징</h3>
 <ul>
  <li>AI 알고리즘 구성이 완성단계가 아니기에 허점이 존재</li>
@@ -101,6 +103,7 @@
 
 ***
 
+<br>
 <h3>Developers</h3>
 
 <table>
@@ -150,12 +153,13 @@
 
 ***
 
-
+<br>
 ### Collaborate
 ##### GitURL = [DungsMall](https://github.com/0gon/DungsMall)
 
 ***
 
+<br>
 ### References
 
 ##### Tomcat link = [Tomcat](https://tomcat.apache.org/download-90.cgi)
