@@ -14,35 +14,46 @@
 
 <h3>프로젝트 설명</h3>
 <h4> 알고리즘 구성 </h4>
-<h4>애플리케이션 역할</h4>
-<h4>추가하고 싶은 기능</h4>
+
+##### AI 구조
+
+<img src = https://github.com/0gon/foodChatBot/assets/134483514/a4804ced-f9e7-4670-a568-1fd906024c8f>
+
+##### DB 구조
+
+<img src = https://github.com/0gon/foodChatBot/assets/134483514/b3f38e45-23ce-4d43-8c37-578269bbcfe0>
+
 
 ***
+
 
 <h3>Web Page</h3>
 <img src = "https://github.com/0gon/foodChatBot/assets/134483514/2953793f-0fcc-47c6-92d4-98c9a7ec8d48">
 
 <img src = "https://github.com/0gon/foodChatBot/assets/134483514/dc967312-b429-46fc-8324-3730b381a2e0">
 
+
 ***
+
 
 <h3>프로젝트 실행 방법</h3>
 
 준비물
-tomcat9.0 설치
-RDBM or MySQL
 
-1. foodchat.zip (DB)를 다운 및 확장자 SQL로 변경
-2. MySQL 로컬 호스트에 admin 추가 (id : dungs , password : dungs )
-3. foodchat 스키마 생성
-4. foodchat 스키마 실행 중 foodchat.sql 실행
-5. tomcat 폴더 내 appdata 폴더에 war 파일 추가
-6. tomcat bin 폴더에서 StartUP.bat 파일 실행
-7. 인터넷 주소창에 localhost:8080 검색.
+** 설치 경로와 파일은 References 참조
+- tomcat9.0 설치
+- RDBM or MySQL
+- DB 파일
+- war 파일
 
+실행 방법
+1. MySQL 로컬 호스트에 admin 추가 (id : dungs , password : dungs )
+2. DB파일 압축 해제 후 sql 실행 후 스키마 등록
+3. 다운받은 foodchatbot.zip 확장자 war 로 변경
+4. tomcat => appdata 폴더 안에 war 파일 이동
+5. tomcat => bin 폴더 안 StartUp.bat 실행
+6. tomcat => appdata 폴더 안 foodchatbot 폴더 내 chat.html 실행
 
-위처럼 따라 왔는데 안되는 경우
-   ROOT 폴더에 넣었던 war파일을 압축해제 후 chat.html 실행
 
 ***
 
@@ -71,12 +82,16 @@ RDBM or MySQL
 <img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white">
 </div>  
 
+
 ***
+
 
 <h3>Test</h3>
 테스트랑 코드 구성 부분은 아래쪽에 따로 추가해서 보여줘도
 
+
 ***
+
 
 <h3>특징</h3>
 <ul>
@@ -131,16 +146,20 @@ RDBM or MySQL
 </table> 
 </table>
 
+
 ***
+
 
 ### Collaborate
 ##### GitURL = [DungsMall](https://github.com/0gon/DungsMall)
 
 ***
-### References
-##### KOMORAN lib URL = [KOMORAN](https://docs.komoran.kr/)
-##### MySQL DB Zip = [foodchat](https://github.com/0gon/foodChatBot/files/12355840/dungsfinal.zip)
 
+### References
+
+##### KOMORAN lib URL = [KOMORAN](https://docs.komoran.kr/)
+##### MySQL DB Zip = [foodChatBotDB.zip](https://github.com/0gon/foodChatBot/files/12434946/foodChatBotDB.zip)
+##### foodChatBot War = [foodChatBot.zip](https://github.com/0gon/foodChatBot/files/12434944/foodChatBot.zip)
 
 
 
