@@ -29,6 +29,18 @@
 
 <img src = https://github.com/0gon/foodChatBot/assets/134483514/b3f38e45-23ce-4d43-8c37-578269bbcfe0>
 
+***
+
+
+
+## AI 학습 방식
+
+![image](https://github.com/KsW96/FoodChatBot_Repo/assets/134483514/cf1e1580-ddf3-4028-aa12-7f2b4b60c5d7)
+![image](https://github.com/KsW96/FoodChatBot_Repo/assets/134483514/5b3c9f2a-0e39-444b-82bb-f291b2ac79f7)
+
+
+
+
 
 ***
 
