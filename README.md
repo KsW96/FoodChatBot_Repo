@@ -139,7 +139,6 @@
 <thead>김성우 </thead>
   <tbody>
     <ul>
-      <li> Part : NLP </li>
       <li>📫 Email address : **ghkfzha1@gmail.com**</li>
       <li>[GitHub](https://github.com/KsW96) </li>
     </ul>
@@ -150,8 +149,6 @@
 <thead>김영곤 </thead>
    <tbody>
     <ul>
-      <li> Part : </li>
-      <li>📫 Email address : **이메일 칸**</li>
       <li>[GitHub](https://github.com/0gon)</li>
     </ul>
   </tbody>
@@ -161,8 +158,6 @@
 <thead>이사라 </thead>
    <tbody>
     <ul>
-      <li> Part : </li>
-      <li>📫 Email address : **이메일 칸**</li>
       <li>[GitHub](https://github.com/LeeSara4) </li>
     </ul>
   </tbody>
